@@ -1,0 +1,197 @@
+<ui version="4.0" >
+ <author>William Pye</author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>VbrfixMain</class>
+ <widget class="QMainWindow" name="VbrfixMain" >
+  <property name="modal" stdset="0" >
+   <bool>false</bool>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>711</width>
+    <height>488</height>
+   </rect>
+  </property>
+  <property name="acceptDrops" >
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle" >
+   <string>Vbrfix (QT4)</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="res.qrc" >:/vbrfix/icon/vbrfixicon.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget" >
+   <layout class="QVBoxLayout" >
+    <property name="margin" >
+     <number>8</number>
+    </property>
+    <property name="spacing" >
+     <number>6</number>
+    </property>
+    <item>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QTreeWidget" name="fixList" >
+        <property name="acceptDrops" >
+         <bool>false</bool>
+        </property>
+        <property name="toolTip" >
+         <string>List of mp3s</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextBrowser" name="logText" >
+        <property name="acceptDrops" >
+         <bool>false</bool>
+        </property>
+        <property name="toolTip" >
+         <string>Log (Fixing Information)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QProgressBar" name="totalProgress" >
+        <property name="toolTip" >
+         <string>Total Progress</string>
+        </property>
+        <property name="value" >
+         <number>0</number>
+        </property>
+        <property name="textVisible" >
+         <bool>true</bool>
+        </property>
+        <property name="invertedAppearance" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="goButton" >
+        <property name="toolTip" >
+         <string>Start Fixing</string>
+        </property>
+        <property name="text" >
+         <string>Go</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="stopButton" >
+        <property name="toolTip" >
+         <string>Cancel Fixing</string>
+        </property>
+        <property name="text" >
+         <string>Stop</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>711</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuAbout" >
+    <property name="title" >
+     <string>About</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAbout_QT" />
+    <addaction name="actionLicense" />
+   </widget>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>File</string>
+    </property>
+    <addaction name="actionAdd_Mp3_s" />
+    <addaction name="actionAdd_Dir" />
+   </widget>
+   <widget class="QMenu" name="menuSettings" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionSettings" />
+    <addaction name="separator" />
+    <addaction name="actionClear_Log" />
+    <addaction name="actionClear_Fix_List" />
+   </widget>
+   <addaction name="menuFile" />
+   <addaction name="menuSettings" />
+   <addaction name="menuAbout" />
+  </widget>
+  <action name="actionAdd_Mp3_s" >
+   <property name="text" >
+    <string>Add Mp3(s)...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Dir" >
+   <property name="text" >
+    <string>Add Dir...</string>
+   </property>
+  </action>
+  <action name="actionAbout" >
+   <property name="text" >
+    <string>About...</string>
+   </property>
+  </action>
+  <action name="actionSettings" >
+   <property name="text" >
+    <string>Settings...</string>
+   </property>
+  </action>
+  <action name="actionAbout_QT" >
+   <property name="text" >
+    <string>About QT...</string>
+   </property>
+  </action>
+  <action name="actionLicense" >
+   <property name="text" >
+    <string>License...</string>
+   </property>
+  </action>
+  <action name="actionClear_Log" >
+   <property name="text" >
+    <string>Clear Log</string>
+   </property>
+  </action>
+  <action name="actionClear_Fix_List" >
+   <property name="text" >
+    <string>Clear Fix List</string>
+   </property>
+  </action>
+ </widget>
+ <pixmapfunction></pixmapfunction>
+ <resources>
+  <include location="res" />
+  <include location="res.qrc" />
+ </resources>
+ <connections/>
+</ui>
