@@ -3,11 +3,11 @@
 # Subdir relative project main directory: .
 # Target is a subdirs project 
 
-SUBDIRS += ConsoleFixer \
-           QtFixer \
-           Fixer 
+SUBDIRS += Fixer \
+           ConsoleFixer \
+           QtFixer
+
 TEMPLATE = subdirs
-CONFIG += release \
-warn_on \
+CONFIG += warn_on \
 qt \
 thread
