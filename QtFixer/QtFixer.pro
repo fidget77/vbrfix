@@ -16,13 +16,13 @@ SOURCES += Main.cpp \
            VbrfixSettings.cpp \
            VbrfixThread.cpp \
            Options.cpp 
-TARGETDEPS += ../Fixer/libFixer.a
-LIBS += ../Fixer/libFixer.a
+POST_TARGETDEPS += ../Fixer/lib/libFixer.a 
+LIBS += ../Fixer/lib/libFixer.a
 INCLUDEPATH += ../Fixer
-CONFIG += debug \
-warn_on \
-qt \
-thread \
-exceptions \
-stl
+TARGET = VbrfixGui
+CONFIG +=  warn_on \
+           qt \
+           thread \
+           exceptions \
+           stl
 TEMPLATE = app
