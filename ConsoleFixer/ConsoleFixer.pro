@@ -3,12 +3,11 @@
 # Subdir relative project main directory: ./ConsoleFixer
 # Target is an application:  VbrfixConsole
 
-TARGETDEPS += ../Fixer/libFixer.a 
-LIBS += ../Fixer/libFixer.a 
+POST_TARGETDEPS += ../Fixer/lib/libFixer.a 
+LIBS += ../Fixer/lib/libFixer.a
 INCLUDEPATH += ../Fixer 
 TARGET = VbrfixConsole 
-CONFIG += debug \
-          warn_on \
+CONFIG += warn_on \
           stl \
           console 
 TEMPLATE = app 
