@@ -29,9 +29,10 @@ SOURCES += FileBuffer.cpp \
            XingFrame.cpp \
            Mp3FileObject.cpp \
            EndianHelper.cpp 
-CONFIG += debug \
-warn_on \
-staticlib \
-exceptions \
-stl
+CONFIG +=  warn_on \
+           staticlib \
+           exceptions \
+           stl
 TEMPLATE = lib
+DESTDIR = lib
+TARGET = Fixer
