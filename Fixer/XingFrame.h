@@ -45,7 +45,10 @@ class XingFrame : public Mp3Frame
 		virtual bool HasLameInfo() const;
 		virtual unsigned long GetLameOffset() const {return m_LameInfoOffset;}
 	protected:
-		XingFrame(unsigned long iOldFilePos, const Mp3Header & header, unsigned int LameInfoAt = 0);
+		enum {NO_QUALITY = 0};
+		XingFrame(unsigned long iOldFilePos, const Mp3Header & header, unsigned int LameInfoAt = 0, unsigned long quality = NO_QUALITY);
+
+		int GetQuality() const {return m_VbrScale;}
 	private:
 		typedef unsigned long _ul32;
 		std::vector<unsigned char> m_Toc;
@@ -56,7 +59,7 @@ class XingFrame : public Mp3Frame
 
 		unsigned long m_LameInfoOffset;
 
-		const XingFrame * m_pLameInfoFrame;
+		const XingFrame * m_pOriginalFrame;
 };
 
 #endif
