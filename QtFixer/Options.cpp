@@ -50,7 +50,7 @@ QString Options::getDestionationFile(QWidget* parentDialog, const QString & orig
 		case MP3_FIXED:
 		{
 			QFileInfo fi(original);
-			dest = fi.absolutePath() + "/" + fi.baseName() + "(vbrfixed)" + fi.completeSuffix();
+			dest = fi.absolutePath() + "/" + fi.baseName() + "(vbrfixed)." + fi.completeSuffix();
 			break;
 		}
 		case DIRECTORY:
