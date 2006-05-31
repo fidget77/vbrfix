@@ -42,6 +42,9 @@ class VbrFixer
 				int GetTotalPercent() const;
 				FixState::State GetState() const;
 				void SetState(FixState::State eState);
+
+				void setPercentOfProcessing(int iPer){m_iPercentOfProcessing = iPer;}
+				void setPercentOfWriting(int iPer){m_iPercentOfWrite = iPer;}
 			private:
 				int m_iPercentOfWrite;
 				int m_iPercentOfProcessing;

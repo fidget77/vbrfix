@@ -100,6 +100,9 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		const Mp3Reader::ConstMp3ObjectList& OriginalMp3Objects = mp3Reader.GetMp3Objects();
 		Mp3Reader::ConstMp3ObjectList Mp3Objects = OriginalMp3Objects;
 
+		m_ProgressDetails.setPercentOfProcessing(20);
+		m_rFeedBackInterface.update();
+
 		// Check if we should Skip this Mp3
 		if(ShouldSkipMp3(Mp3Objects))
 		{
@@ -112,6 +115,9 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			m_ProgressDetails.SetState(FixState::CANCELLED);
 			return;
 		}
+
+		m_ProgressDetails.setPercentOfProcessing(40);
+		m_rFeedBackInterface.update();
 	
 		// remove unwanted objects
 		if(!m_rFixerSettings.GetRemovingDataTypes().empty())
@@ -122,6 +128,9 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 				IsOfMp3ObjectType(m_rFixerSettings.GetRemovingDataTypes())
 			), Mp3Objects.end());
 		}
+
+		m_ProgressDetails.setPercentOfProcessing(60);
+		m_rFeedBackInterface.update();
 	
 		if(m_rFeedBackInterface.HasUserCancelled())
 		{
@@ -149,6 +158,9 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			m_ProgressDetails.SetState(FixState::CANCELLED);
 			return;
 		}
+
+		m_ProgressDetails.setPercentOfProcessing(100);
+		m_rFeedBackInterface.update();
 	
 		// Create a new mp3
 		inFile.reopen(); // we have to reopen the file as it reached the end and can't continue to be used
@@ -183,6 +195,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 	
 		// write the objects to the new file
 		unsigned long iFileSizeTotal = 0;
+		int iObjectsWritten = 0; const int iTotalObjects = Mp3Objects.size();
 		for(Mp3Reader::ConstMp3ObjectList::const_iterator iter = Mp3Objects.begin(); iter != Mp3Objects.end(); ++iter)
 		{
 			(*iter)->writeToFile(inFile, outFile);
@@ -192,6 +205,8 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 				m_ProgressDetails.SetState(FixState::CANCELLED);
 				return;
 			}
+			m_ProgressDetails.setPercentOfWriting( ++iObjectsWritten / iTotalObjects );
+			m_rFeedBackInterface.update();
 		}
 	
 		if(m_rFeedBackInterface.HasUserCancelled())
@@ -209,6 +224,8 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		m_rFeedBackInterface.addLogMessage(Log::LOG_INFO, "Finished Fix");
 		delete xingFrame;
 		m_ProgressDetails.SetState(FixState::FIXED);
+		m_ProgressDetails.setPercentOfWriting(100);
+		m_rFeedBackInterface.update();
 	}
 	catch(const char* pMsg)
 	{
@@ -236,7 +253,7 @@ VbrFixer::ProgressDetails::ProgressDetails( )
 
 int VbrFixer::ProgressDetails::GetTotalPercent( ) const
 {
-	return ((m_iPercentOfRead + m_iPercentOfProcessing + m_iPercentOfWrite) / 3);
+	return ((m_iPercentOfRead * 7 + m_iPercentOfProcessing * 1 + m_iPercentOfWrite * 2) / 10);
 }
 
 bool VbrFixer::ShouldSkipMp3( const Mp3Reader::ConstMp3ObjectList & /*frames*/ ) const
