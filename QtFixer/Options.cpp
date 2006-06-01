@@ -97,16 +97,36 @@ void Options::Save()
 
 void Options::SaveLoad(bool bSave)
 {
-	QSettings settings("Vbrfix", "WAP Vbrfix");
+	std::auto_ptr<QSettings> settings(NULL);
+	bool bUseSettingsFileIfFoundInAppDir = false;
+	
+	#ifdef Q_OS_WIN32
+		bUseSettingsFileIfFoundInAppDir = true;
+	#endif
+	
+	if(bUseSettingsFileIfFoundInAppDir)
+	{
+		QString appDir = QCoreApplication::applicationDirPath();
+		QString settingsFile = appDir + "//vbrfix.ini";
+		if(QFile(settingsFile).exists())
+		{
+			settings.reset(new QSettings(settingsFile, QSettings::IniFormat));
+		}
+	}
+
+	if(settings.get() == NULL)
+	{
+		settings.reset(new QSettings("Vbrfix", "WAP Vbrfix"));
+	}
 	
 	int tmpOutputMethod = static_cast<int>(outputMethod);
 	
-	SaveLoadHelper<QString >(bSave, settings, outputDir, "Output Directory");
-	SaveLoadHelper<int >(bSave, settings, tmpOutputMethod, "Output Method");
+	SaveLoadHelper<QString >(bSave, *settings, outputDir, "Output Directory");
+	SaveLoadHelper<int >(bSave, *settings, tmpOutputMethod, "Output Method");
 	
-	SaveLoadHelper<bool >(bSave, settings, m_KeepLameInfo, "Keep Lame Info");
-	SaveLoadHelper<bool >(bSave, settings, m_AlwaysSkip, "Always Skip");
-	SaveLoadHelper<int >(bSave, settings, m_MinPercentUnderstood, "Minimum Understood Percent");
+	SaveLoadHelper<bool >(bSave, *settings, m_KeepLameInfo, "Keep Lame Info");
+	SaveLoadHelper<bool >(bSave, *settings, m_AlwaysSkip, "Always Skip");
+	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");
 	
 	
 	outputMethod = static_cast<OutputFileMethod >(tmpOutputMethod);
