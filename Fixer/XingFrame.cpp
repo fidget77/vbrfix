@@ -185,7 +185,7 @@ void XingFrame::Setup( const Mp3ObjectList & finalObjectList, const XingFrame * 
 	m_Flags = FRAMES_FLAG | BYTES_FLAG | TOC_FLAG | VBR_SCALE_FLAG;
 
 	// Frame Count
-	m_FrameCount = framePositions.size();
+	m_FrameCount = framePositions.size() - 1; // - 1 as we don't include this Xing frame, just the music data frames
 
 	// Stream Size
 	m_StreamSize = iNewFileSize;
