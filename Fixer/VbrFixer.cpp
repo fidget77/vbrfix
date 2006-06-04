@@ -59,6 +59,7 @@ namespace
 			{
 				if(pObject->GetObjectType().IsTypeOfFrame())
 				{
+					assert(dynamic_cast<const Mp3Frame*>(pObject));
 					if(static_cast<const Mp3Frame*>(pObject)->HasLameInfo())
 					{
 						return true;
@@ -174,18 +175,18 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			const XingFrame * pOriginalFrame = NULL;
 			if(m_rFixerSettings.KeepLameInfo())
 			{
-				Mp3Reader::ConstMp3ObjectList::const_iterator lameFrame = std::find_if(OriginalMp3Objects.begin(), OriginalMp3Objects.end(), FindLameInfoFrame());
-				if(lameFrame != Mp3Objects.end())
+				Mp3Reader::ConstMp3ObjectList::const_iterator lameFrameIter = std::find_if(OriginalMp3Objects.begin(), OriginalMp3Objects.end(), FindLameInfoFrame());
+				if(lameFrameIter != OriginalMp3Objects.end())
 				{
-					pOriginalFrame = static_cast<const XingFrame* >(*lameFrame);
+					pOriginalFrame = static_cast<const XingFrame* >(*lameFrameIter);
 				}
 			}
 			if(!pOriginalFrame)
 			{
-				Mp3Reader::ConstMp3ObjectList::const_iterator xingFrame = std::find_if(OriginalMp3Objects.begin(), OriginalMp3Objects.end(), IsOfMp3ObjectType(Mp3ObjectType::XING_FRAME));
-				if(xingFrame != OriginalMp3Objects.end())
+				Mp3Reader::ConstMp3ObjectList::const_iterator xingFrameIter = std::find_if(OriginalMp3Objects.begin(), OriginalMp3Objects.end(), IsOfMp3ObjectType(Mp3ObjectType::XING_FRAME));
+				if(xingFrameIter != OriginalMp3Objects.end())
 				{
-					pOriginalFrame = static_cast<const XingFrame* >(*xingFrame);
+					pOriginalFrame = static_cast<const XingFrame* >(*xingFrameIter);
 				}
 			}
 			xingFrame->Setup(Mp3Objects, pOriginalFrame);
