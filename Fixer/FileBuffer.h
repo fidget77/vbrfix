@@ -39,7 +39,7 @@ class FileBuffer
 
 		bool proceed(unsigned int i);
 
-		bool setPostion(unsigned long iPos);
+		bool setPosition(unsigned long iPos);
 		bool readIntoBuffer(unsigned char * pBuffer, unsigned int iSize);
 
 		bool DoesSay(std::string sText, int iStartingfromByte = 0) const;
@@ -51,6 +51,7 @@ class FileBuffer
 		unsigned long position() const;
 
 		unsigned long GetLength() const {return m_Length;}
+		
 	private:
 		mutable std::ifstream m_Stream;
 		mutable std::deque<unsigned char> m_InternalBuffer;

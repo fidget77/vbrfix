@@ -86,7 +86,7 @@ bool FileBuffer::isDataLeft( ) const
 	return (!m_InternalBuffer.empty() || (!m_Stream.eof() && (m_Stream.tellg() < m_Length)));
 }
 
-bool FileBuffer::setPostion( unsigned long iPos )
+bool FileBuffer::setPosition( unsigned long iPos )
 {
 	m_Stream.seekg(iPos, std::ios_base::beg);
 	m_InternalBuffer.clear();
