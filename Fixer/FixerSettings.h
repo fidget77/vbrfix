@@ -23,6 +23,7 @@
 #define FIXERSETTINGS_H
 
 #include <string>
+#include <vector>
 #include <set>
 #include "Mp3FileObject.h"
 
@@ -33,16 +34,21 @@ class FixerSettings
 {
 	public:
 		FixerSettings();
-		
+		virtual ~FixerSettings() {}
+
 		bool RemoveType(Mp3ObjectType eType) const;
-		void SetRemoveType(Mp3ObjectType eType, bool bRemove);
+		void SetRemoveType(Mp3ObjectType eType, bool bMarkForRemoval);
 		const Mp3ObjectType::Set & GetRemovingDataTypes() const;
 
 		bool AlwaysSkip() const;
 		void SetAlwaysSkip(bool bAlwaysSkip);
 
-		bool KeepLameInfo() const;
-		void SetKeepLameInfo(bool bKeepLameInfo);
+		enum LameOption { LAME_REMOVE, LAME_KEEP, LAME_KEEP_CALC_TAG_CRC };
+
+		LameOption LameInfoOption() const {return m_LameInfoOption;}
+		void SetLameInfoOption(LameOption lameInfo) {m_LameInfoOption = lameInfo;}
+
+		bool KeepLameInfo() const {return m_LameInfoOption != LAME_REMOVE;}
 
 		int MinimumPercentUnderStood() const;
 		void SetMinimumPercentUnderStood(int iMinPercentUnderStood);
@@ -50,13 +56,21 @@ class FixerSettings
 		bool loggingDetail() const {return m_bLogDetail;}
 		void setLoggingDetail(bool value) {m_bLogDetail = value;}
 
+		bool recalculateLameTagHeaderCrc() const {return m_LameInfoOption == LAME_KEEP_CALC_TAG_CRC;}
+
 		void Defaults();
+
+		bool skippingNonVbr() const { return m_bSkipNonVbr;}
+		void setSkippingNonVbr(bool bSkip) { m_bSkipNonVbr = bSkip;}
+		
 	protected:
 		Mp3ObjectType::Set m_RemoveTypes;
 		bool m_AlwaysSkip;
-		bool m_KeepLameInfo;
 		int m_MinPercentUnderstood;
 		bool m_bLogDetail;
+		LameOption m_LameInfoOption;
+		bool m_bSkipNonVbr;
+		
 };
 
 #endif

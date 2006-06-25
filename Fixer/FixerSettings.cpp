@@ -23,9 +23,10 @@
 
 FixerSettings::FixerSettings( )
 	: m_AlwaysSkip(false)
-	, m_KeepLameInfo(true)
 	, m_MinPercentUnderstood(99)
 	, m_bLogDetail(true)
+	, m_LameInfoOption(LAME_KEEP)
+	, m_bSkipNonVbr(true)
 {
 	m_RemoveTypes.insert(Mp3ObjectType::XING_FRAME);
 }
@@ -40,9 +41,9 @@ bool FixerSettings::RemoveType(Mp3ObjectType eType ) const
 	return (m_RemoveTypes.find(eType) != m_RemoveTypes.end());
 }
 
-void FixerSettings::SetRemoveType( Mp3ObjectType eType, bool bRemove )
+void FixerSettings::SetRemoveType( Mp3ObjectType eType, bool bMarkForRemoval )
 {
-	if(!bRemove)
+	if(bMarkForRemoval)
 	{
 		m_RemoveTypes.insert(eType);
 	}
@@ -65,16 +66,6 @@ bool FixerSettings::AlwaysSkip( ) const
 void FixerSettings::SetAlwaysSkip( bool bAlwaysSkip )
 {
 	m_AlwaysSkip = bAlwaysSkip;
-}
-
-bool FixerSettings::KeepLameInfo( ) const
-{
-	return m_KeepLameInfo;
-}
-
-void FixerSettings::SetKeepLameInfo( bool bKeepLameInfo )
-{
-	m_KeepLameInfo = bKeepLameInfo;
 }
 
 int FixerSettings::MinimumPercentUnderStood( ) const
