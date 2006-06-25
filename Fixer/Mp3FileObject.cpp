@@ -32,7 +32,7 @@ void Mp3Object::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 		const unsigned long iObjectSize = size();
 		const unsigned long iObjectStartPos = getOldFilePosition();
 		unsigned char* buffer[iObjectSize];
-		originalFile.setPostion(iObjectStartPos);
+		originalFile.setPosition(iObjectStartPos);
 		originalFile.readIntoBuffer(reinterpret_cast<unsigned char*>(&buffer), iObjectSize);
 		rOutFile.write(reinterpret_cast<char*>(&buffer), iObjectSize);
 	}
