@@ -189,7 +189,19 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 					pOriginalFrame = static_cast<const XingFrame* >(*xingFrameIter);
 				}
 			}
-			xingFrame->Setup(Mp3Objects, pOriginalFrame);
+			if(pOriginalFrame)
+			{
+				xingFrame->SetQuality( pOriginalFrame->GetQuality());
+				if(m_rFixerSettings.KeepLameInfo())
+				{
+					xingFrame->SetLameData( pOriginalFrame->GetLameData() );
+					if(m_rFixerSettings.recalculateLameTagHeaderCrc())
+					{
+						xingFrame->SetRecalculateLameTagCrc(true);
+					}
+				}
+			}
+			xingFrame->Setup(Mp3Objects);
 		}
 
 		m_ProgressDetails.SetState(FixState::WRITING);
@@ -269,6 +281,11 @@ bool VbrFixer::ShouldSkipMp3( const Mp3Reader::ConstMp3ObjectList & /*frames*/ )
 	if(m_rFixerSettings.AlwaysSkip())
 	{
 		m_rFeedBackInterface.addLogMessage( Log::LOG_INFO, "Always Skip is on; skipping file");
+		return true;
+	}
+	if(m_rFixerSettings.skippingNonVbr() && !m_ProgressDetails.IsVbr())
+	{
+		m_rFeedBackInterface.addLogMessage( Log::LOG_INFO, "Skipping as the file is not vbr");
 		return true;
 	}
 	return false;
