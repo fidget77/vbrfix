@@ -68,4 +68,14 @@ namespace EndianHelper
 		uResult |= pBuffer[3];
 		return uResult;
 	}
+
+	std::vector< unsigned char > ConvertToBigEndianBytes( unsigned long uData )
+	{
+		std::vector<unsigned char> bytes(4);
+		bytes[0] = static_cast<unsigned char>(((uData & 0xFF000000) >> 24));
+		bytes[1] = static_cast<unsigned char>(((uData & 0x00FF0000) >> 16));
+		bytes[2] = static_cast<unsigned char>(((uData & 0x0000FF00) >> 8));
+		bytes[3] = static_cast<unsigned char>((uData & 0x000000FF));
+		return bytes;
+	}
 }

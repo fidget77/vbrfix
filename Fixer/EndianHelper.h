@@ -23,6 +23,7 @@
 #define ENDIANHELPER_H
 
 #include <fstream>
+#include <vector>
 
 namespace EndianHelper
 {
@@ -31,6 +32,7 @@ namespace EndianHelper
 	unsigned long ConvertToNativeFromBigEndian(unsigned char* pBuffer);
 
 	void WriteToFileAsBigEndian(std::ofstream& file, unsigned long uData);
+	std::vector<unsigned char> ConvertToBigEndianBytes(unsigned long uData);
 }
 
 #endif
