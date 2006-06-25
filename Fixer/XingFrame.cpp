@@ -25,6 +25,10 @@
 #include "EndianHelper.h"
 #include "FileBuffer.h"
 #include "FeedBackInterface.h"
+#include "CrcCalc.h"
+#include <cmath>
+#include <iostream>
+#include <iterator>
 
 namespace
 {
@@ -35,6 +39,8 @@ namespace
 
 	const unsigned int HEADER_BYTES = 4;
 	const int INVALID_XING_OFFSET = -1;
+
+	const std::string XingIdentifier = "Xing";
 
 	int GetXingHeaderOffset(Mp3Header header)
 	{
@@ -71,60 +77,82 @@ namespace
 		unsigned long iPos = iXingHeaderPos;
 		return iPos + GetXingDataSize(uXingFlags);
 	}
-}
 
-// TODO Copy Lame Part of old tag
+	void AddAsBigEndian(std::deque<unsigned char> &collection, unsigned long uData)
+	{
+		std::vector<unsigned char> bytes = EndianHelper::ConvertToBigEndianBytes(uData);
+		collection.insert(collection.end(), bytes.begin(), bytes.end());		
+	}
+}
 
 void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile ) const
 {
+	std::deque<unsigned char> buffer;
+
 	if(IsFromFile())
 	{
 		return Mp3Frame::writeToFile(originalFile, rOutFile);
 	}
 	using namespace EndianHelper;
-	const std::streampos iOutFileStartPos = rOutFile.tellp();
 	const int iXingOffset = GetXingHeaderOffset(m_Header);
 	assert(iXingOffset >= 0);
 	if(iXingOffset < 0) throw "Error Creating Xing Tag";
 
-	WriteToFileAsBigEndian(rOutFile, m_Header.GetHeader());
-	for(unsigned int i = 0; i < (iXingOffset - HEADER_BYTES); ++i)
-	{
-		rOutFile << '\0';
-	}
-	rOutFile << 'X' << 'i' << 'n' << 'g';
-	WriteToFileAsBigEndian(rOutFile, m_Flags);
-	WriteToFileAsBigEndian(rOutFile, m_FrameCount);
-	WriteToFileAsBigEndian(rOutFile, m_StreamSize);
-	int i = m_Toc.size();
-	assert(i == 100);
+	AddAsBigEndian(buffer, m_Header.GetHeader());
+	buffer.insert(buffer.end(), iXingOffset - HEADER_BYTES, '\0');
+	buffer.insert(buffer.end(), XingIdentifier.begin(), XingIdentifier.end());
+	AddAsBigEndian(buffer, m_Flags);
+	AddAsBigEndian(buffer, m_FrameCount);
+	AddAsBigEndian(buffer, m_StreamSize);
+	assert(100 == m_Toc.size());
+	buffer.insert(buffer.end(), m_Toc.begin(), m_Toc.end());
 	
-	for(std::vector<unsigned char>::const_iterator tocIter = m_Toc.begin(); tocIter != m_Toc.end(); ++ tocIter)
+	AddAsBigEndian(buffer, m_VbrScale);
+
+	if(HasLameInfo())
 	{
-		rOutFile << *tocIter;
-	}
-	WriteToFileAsBigEndian(rOutFile, m_VbrScale);
-	
-	// Lame Info
-	if(m_pOriginalFrame && m_pOriginalFrame->HasLameInfo())
-	{
-		const unsigned long lameOffset = m_pOriginalFrame->GetLameOffset();
-		const unsigned long uOldFileLamePosition = m_pOriginalFrame->getOldFilePosition() + lameOffset;
-		const unsigned long uOldLameSize = m_pOriginalFrame->size() - lameOffset;
-		const unsigned long iRestOfSpace = size() - (rOutFile.tellp() - iOutFileStartPos);
-		originalFile.setPostion(uOldFileLamePosition);
-		for(unsigned long i = 0; i < iRestOfSpace && i < uOldLameSize; ++i)
+		const unsigned long lamePos = buffer.size();
+		// Lame Info
+		buffer.insert(buffer.end(), m_LameData.begin(), m_LameData.end());
+
+		const unsigned long iCrcPos = lamePos + 0xBE - 0x9C;
+
+		if(m_bReCalculateLameCrc)
 		{
-			rOutFile << originalFile[i];
+			if(lamePos != 0x9C || iCrcPos != 0xBE)
+			{
+				throw "This type of Lame Info is unsupported, Recalculation of LameCrc cannot be performed. Try turrning off Lame CRC recalculation or logging a bug.";
+			}
+			
+			// Calculate the CRC
+			assert(buffer.size() >= iCrcPos);
+			if(buffer.size() < iCrcPos)
+			{
+				throw "Error Calculating Lame Crc";
+			}
+			int crc = 0;
+			for(unsigned long iByte = 0; iByte < iCrcPos; ++iByte)
+			{
+				int val = buffer[iByte];
+				crc = CrcHelper::CRC_update_lookup(val, crc);
+			}
+			std::vector<unsigned char> bigEndian = EndianHelper::ConvertToBigEndianBytes(crc);
+			assert((bigEndian[0] + bigEndian[1]) == 0);
+			if((bigEndian[0] + bigEndian[1]) != 0)
+			{
+				throw "Error Caclulation Lame CRC";
+			}
+			
+			buffer[iCrcPos] = bigEndian[2];
+			buffer[iCrcPos + 1] = bigEndian[3];
 		}
 	}
-
+	
 	// rest of space of frame
-	const unsigned long iRest = size() - (rOutFile.tellp() - iOutFileStartPos);
-	for(unsigned long i = 0; i < iRest; ++i)
-	{
-		rOutFile << '\0';
-	}
+	const unsigned long iRest = size() - buffer.size();
+	buffer.insert(buffer.end(), iRest, '\0');
+
+	std::copy(buffer.begin(), buffer.end(), std::ostream_iterator<unsigned char>(rOutFile));
 }
 
 XingFrame::XingFrame(const Mp3Header & header)
@@ -133,19 +161,15 @@ XingFrame::XingFrame(const Mp3Header & header)
 	, m_FrameCount(0)
 	, m_StreamSize(0)
 	, m_VbrScale(0)
-	, m_LameInfoOffset(0)
-	, m_pOriginalFrame(NULL)
+	, m_bReCalculateLameCrc(false)
 {
 	assert(header.IsValid());
 }
 
-void XingFrame::Setup( const Mp3ObjectList & finalObjectList, const XingFrame * pXingFrame )
+void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 {
-	m_pOriginalFrame = pXingFrame;
-
 	unsigned int minSize = GetXingHeaderOffset(m_Header) + 120;
-	const bool bHasLameInfo = pXingFrame && pXingFrame->HasLameInfo();
-	if(bHasLameInfo)
+	if(HasLameInfo())
 	{
 		minSize += 20 + 208;
 	}
@@ -167,7 +191,7 @@ void XingFrame::Setup( const Mp3ObjectList & finalObjectList, const XingFrame * 
 		{
 			framePositions.push_back(iNewFileSize);
 		}
-		iNewFileSize +=  (*iter)->size();
+		iNewFileSize += (*iter)->size();
 	}
 
 	m_Toc.clear();
@@ -177,7 +201,7 @@ void XingFrame::Setup( const Mp3ObjectList & finalObjectList, const XingFrame * 
 	for(int iPercent = 0; iPercent < 100; ++iPercent)
 	{
 		int iFrame = static_cast<int>((iPercent / 100.0) * framePositions.size());
-		m_Toc.push_back(((255 * framePositions[iFrame]) / iNewFileSize));
+		m_Toc.push_back(((256 * framePositions[iFrame]) / iNewFileSize));
 	}
 	assert(m_Toc.size() == 100);
 
@@ -189,14 +213,6 @@ void XingFrame::Setup( const Mp3ObjectList & finalObjectList, const XingFrame * 
 
 	// Stream Size
 	m_StreamSize = iNewFileSize;
-
-	// Vbr Scale / Quality 
-	m_VbrScale = 0; // we can't really calclate this
-	// Copy this from an old Xing tag if we found one
-	if(m_pOriginalFrame)
-	{
-		m_VbrScale = m_pOriginalFrame->GetQuality();
-	}
 }
 
 XingFrame * XingFrame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack )
@@ -204,40 +220,65 @@ XingFrame * XingFrame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterfac
 	// must be called from Mp3Frame::Check() or the Mp3Header might not have been verified and things like that`
 	Mp3Header header(mp3FileBuffer.GetFromBigEndianToNative());
 	const int iXingHeaderPos = GetXingHeaderOffset(header);
-	const std::string XingIdentifier = "Xing";
 	if(mp3FileBuffer.DoesSay( XingIdentifier, iXingHeaderPos))
 	{
 		const unsigned long uXingFlags = mp3FileBuffer.GetFromBigEndianToNative( iXingHeaderPos + XingIdentifier.size());
 		const unsigned long uLamePosition = GetLameInfoPosition(iXingHeaderPos, uXingFlags);
-		const bool bContainsLameInfo = mp3FileBuffer.DoesSay( "LAME", uLamePosition);
-		std::string sMsg = "Found Xing Header Frame";
-		if(bContainsLameInfo) sMsg += " with LAME info";
-		feedBack.addLogMessage( Log::LOG_INFO, sMsg);
-		unsigned long quality = NO_QUALITY;
+		const bool bContainsLameInfo = mp3FileBuffer.DoesSay("LAME", uLamePosition);
+		XingFrame *pNewFrame = new XingFrame(mp3FileBuffer.position(), header);
+		if(bContainsLameInfo)
+		{
+			const int LAME_LENGTH = (header.GetFrameSize() - uLamePosition);
+			std::vector< unsigned char > lameInfo(LAME_LENGTH);
+			for(int i = 0 ; i < LAME_LENGTH; ++i)
+			{
+				lameInfo[i] = mp3FileBuffer[uLamePosition + i];
+			}
+			pNewFrame->SetLameData(lameInfo);
+		}
 		if(uXingFlags & VBR_SCALE_FLAG)
 		{
 			int iQualPos = iXingHeaderPos + XingIdentifier.size() + 4; // +4 is the size of the flags
 			if(uXingFlags & FRAMES_FLAG) iQualPos += 4;
 			if(uXingFlags & BYTES_FLAG) iQualPos += 4;
 			if(uXingFlags & TOC_FLAG) iQualPos += 100;
-			quality = mp3FileBuffer.GetFromBigEndianToNative( iQualPos);
+			int quality = mp3FileBuffer.GetFromBigEndianToNative( iQualPos );
+			pNewFrame->SetQuality(quality);
 		}
+
+		std::string sMsg = "Found Xing Header Frame";
+		if(bContainsLameInfo) sMsg += " with LAME info";
+		feedBack.addLogMessage( Log::LOG_INFO, sMsg);
 		
-		return new XingFrame( mp3FileBuffer.position(), header, bContainsLameInfo ? uLamePosition : 0, quality);
+		return pNewFrame;
 	}
 	return NULL;
 }
 
-XingFrame::XingFrame( unsigned long iOldFilePos, const Mp3Header & header, unsigned int LameInfoAt, unsigned long quality)
+XingFrame::XingFrame( unsigned long iOldFilePos, const Mp3Header & header)
 	: Mp3Frame(iOldFilePos, header)
-	, m_VbrScale(quality)
-	, m_LameInfoOffset(LameInfoAt)
+	, m_VbrScale(NO_QUALITY)
 {
 }
 
 bool XingFrame::HasLameInfo( ) const
 {
-	return (m_LameInfoOffset != 0);
+	return (!m_LameData.empty());
+}
+
+void XingFrame::SetQuality( int quality )
+{
+	m_VbrScale = quality;
+}
+
+void XingFrame::SetLameData( const std::vector< unsigned char > & lameData )
+{
+	m_LameData = lameData;
+}
+
+const std::vector< unsigned char > & XingFrame::GetLameData( ) const
+{
+	return m_LameData;
 }
 
 

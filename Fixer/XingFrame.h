@@ -34,7 +34,7 @@ class XingFrame : public Mp3Frame
 	public:
 		XingFrame(const Mp3Header & header);
 
-		void Setup(const Mp3ObjectList & finalObjectList, const XingFrame *pLameFrame = NULL);
+		void Setup(const Mp3ObjectList & finalObjectList);
 
 		virtual void writeToFile(FileBuffer & originalFile, std::ofstream & rOutFile) const;
 
@@ -43,12 +43,19 @@ class XingFrame : public Mp3Frame
 		static XingFrame * Check(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack);
 
 		virtual bool HasLameInfo() const;
-		virtual unsigned long GetLameOffset() const {return m_LameInfoOffset;}
-	protected:
-		enum {NO_QUALITY = 0};
-		XingFrame(unsigned long iOldFilePos, const Mp3Header & header, unsigned int LameInfoAt = 0, unsigned long quality = NO_QUALITY);
 
 		int GetQuality() const {return m_VbrScale;}
+		void SetQuality(int quality);
+
+		void SetLameData(const std::vector<unsigned char> &lameData);
+		const std::vector<unsigned char>& GetLameData() const;
+
+		void SetRecalculateLameTagCrc(bool value) {m_bReCalculateLameCrc = value;}
+		
+	protected:
+		enum {NO_QUALITY = 0};
+		XingFrame(unsigned long iOldFilePos, const Mp3Header & header);
+
 	private:
 		typedef unsigned long _ul32;
 		std::vector<unsigned char> m_Toc;
@@ -57,9 +64,9 @@ class XingFrame : public Mp3Frame
 		_ul32 m_StreamSize;
 		_ul32 m_VbrScale;
 
-		unsigned long m_LameInfoOffset;
+		std::vector<unsigned char> m_LameData;
 
-		const XingFrame * m_pOriginalFrame;
+		bool m_bReCalculateLameCrc;
 };
 
 #endif
