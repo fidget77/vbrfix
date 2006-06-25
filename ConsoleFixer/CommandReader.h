@@ -19,16 +19,31 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////*/
 
-#include "ConsoleFixer.h"
+#ifndef COMMANDREADER_H
+#define COMMANDREADER_H
 
-int main(const int iCount, const char ** pArgs)
+#include <list>
+#include <string>
+
+class CommandReader
 {
-	ConsoleFixer::CommandList args;
-	for(int i = 0; i < iCount; ++i)
-	{
-		args.push_back(std::string(pArgs[i]));
-	}
-	ConsoleFixer app(args);
-	app.Run();
-	return 0;
-}
+	public:
+		typedef std::list < std::string > OptionList;
+		typedef std::list < std::string > ParameterList;
+		typedef std::list < std::string > ArgList;
+		CommandReader(const ArgList& originalargs);
+
+		virtual ~CommandReader();
+
+		const OptionList& GetOptionList() const {return m_Options;}
+		const ParameterList& GetParameterList() const {return m_Parameters;}
+
+	private:
+		ParameterList m_Parameters;
+		OptionList m_Options;
+		std::string m_ProgramName;
+		void ProcessArg(const std::string & arg);
+
+};
+
+#endif

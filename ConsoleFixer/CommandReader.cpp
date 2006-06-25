@@ -19,16 +19,58 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////*/
 
-#include "ConsoleFixer.h"
+#include "CommandReader.h"
 
-int main(const int iCount, const char ** pArgs)
+namespace
 {
-	ConsoleFixer::CommandList args;
-	for(int i = 0; i < iCount; ++i)
-	{
-		args.push_back(std::string(pArgs[i]));
-	}
-	ConsoleFixer app(args);
-	app.Run();
-	return 0;
+	bool bFirstCommandIsTheProgramName = true;
 }
+
+CommandReader::CommandReader(const ArgList& originalArgs)
+{
+	ArgList args = originalArgs;
+	if(bFirstCommandIsTheProgramName)
+	{
+		if(args.empty())
+		{
+			throw ("Unexpected program arguments");
+		}
+		m_ProgramName = args.front();
+		args.pop_front();
+	}
+	for(ArgList::const_iterator iter = args.begin(); iter != args.end(); ++iter)
+	{
+		ProcessArg( *iter );
+	}
+}
+
+
+CommandReader::~CommandReader()
+{
+}
+
+void CommandReader::ProcessArg( const std::string & arg )
+{
+	if(!arg.empty())
+	{
+		if(arg.substr(0, 2) == "--")
+		{
+			m_Options.push_back(arg.substr(2));
+		}
+		else if(arg[0] == '-')
+		{
+			m_Options.push_back(arg.substr(1));
+		}
+		else
+		{
+			m_Parameters.push_back(arg);
+		}
+	}
+	else
+	{
+		assert(0);
+		throw ("Unexpected Error");
+	}
+}
+
+

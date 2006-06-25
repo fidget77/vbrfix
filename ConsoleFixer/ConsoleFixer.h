@@ -22,15 +22,19 @@
 #ifndef CONSOLEFIXER_H
 #define CONSOLEFIXER_H
 
-#include <vector>
+#include <list>
 #include <string>
 
 #include "FeedBackInterface.h"
+#include "CommandReader.h"
+
+class FixerSettings;
 
 class ConsoleFixer : public FeedBackInterface
 {
 	public:
-		ConsoleFixer(std::vector< std::string > args);
+		typedef std::list< std::string > CommandList;
+		ConsoleFixer(const CommandList& args);
 
 		virtual ~ConsoleFixer();
 
@@ -42,7 +46,9 @@ class ConsoleFixer : public FeedBackInterface
 
 		virtual bool HasUserCancelled() const {return false;}
 	private:
-		std::vector< std::string > m_Args;
+		const CommandList& m_Args;
+
+		bool GetFixerSettingsFromOptions(FixerSettings & settings, const CommandReader::OptionList& optionList);
 };
 
 #endif

@@ -23,12 +23,13 @@
 #include "VbrFixer.h"
 #include "FixerSettings.h"
 #include <iostream>
+#include "CommandReader.h"
 
 ConsoleFixer::~ConsoleFixer()
 {
 }
 
-ConsoleFixer::ConsoleFixer( std::vector< std::string > args)
+ConsoleFixer::ConsoleFixer( const CommandList& args)
 	: m_Args(args)
 {
 }
@@ -43,20 +44,68 @@ bool ConsoleFixer::Run( )
 	std::cout << "Vbrfix Console v0.7" << std::endl;
 	FixerSettings settings;
 	VbrFixer fixer(*this, settings);
-	if(m_Args.size() == 3)
+	CommandReader cmdReader(m_Args);
+	if((cmdReader.GetParameterList().size() == 2) && GetFixerSettingsFromOptions(settings, cmdReader.GetOptionList()))
 	{
-		std::string inFile = m_Args[1];
-		std::string outFile = m_Args[2];
+		const std::string& inFile = cmdReader.GetParameterList().front();
+		const std::string& outFile = cmdReader.GetParameterList().back();
+	
 		std::cout << "Fixing " << inFile << "->" << outFile << std::endl;
-		fixer.Fix( inFile, outFile);
+		fixer.Fix(inFile, outFile);
 		std::cout << "Finished Fixing" << std::endl;
 	}
 	else
 	{
-		std::cout << "usage :" << std::endl;
-		std::cout << "./vbrfix in.mp3 out.mp3" << std::endl;
+		std::cout << "Usage :" << std::endl;
+		std::cout << "./vbrfix [--option] [--option] in.mp3 out.mp3" << std::endl;
+		std::cout << "options (case sensitive):" << std::endl << "--removedid3v1" << std::endl << "--removedId3v2" << std::endl << "--removeUnknown" << std::endl << "--removeLame" << std::endl << "--keepLame" << std::endl << "--keepLameUpdateCrc" << std::endl;
 	}
 	return true;
 }
+
+bool ConsoleFixer::GetFixerSettingsFromOptions( FixerSettings & settings, const CommandReader::OptionList & optionList)
+{
+	for(CommandReader::OptionList::const_iterator iter = optionList.begin(); iter != optionList.end(); ++iter)
+	{
+		const std::string & option = *iter;
+		if(option == "removedId3v1")
+		{
+			settings.SetRemoveType(Mp3ObjectType::ID3V1_TAG, true);
+			std::cout << "Remove Id3v1 on" << std::endl;
+		}
+		else if (option == "removeId3v2")
+		{
+			settings.SetRemoveType(Mp3ObjectType::ID3V2_TAG, true);
+			std::cout << "Remove Id3v2 on" << std::endl;
+		}
+		else if (option == "removeUnknown")
+		{
+			settings.SetRemoveType(Mp3ObjectType::UNKNOWN_DATA, true);
+			std::cout << "Remove Unknown on" << std::endl;
+		}
+		else if (option == "removeLame")
+		{
+			settings.SetLameInfoOption(FixerSettings::LAME_REMOVE);
+			std::cout << "Remove Lame on" << std::endl;
+		}
+		else if (option == "keepLame")
+		{
+			settings.SetLameInfoOption(FixerSettings::LAME_KEEP);
+			std::cout << "KeepLame on" << std::endl;
+		}
+		else if (option == "keepLameUpdateCrc")
+		{
+			settings.SetLameInfoOption(FixerSettings::LAME_KEEP_CALC_TAG_CRC);
+			std::cout << "Keep Lame Update Crc on" << std::endl;
+		}
+		else
+		{
+			std::cout << "Not understood option " << option << std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
 
 

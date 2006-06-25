@@ -3,14 +3,16 @@
 # Subdir relative project main directory: ./ConsoleFixer
 # Target is an application:  VbrfixConsole
 
-POST_TARGETDEPS += ../Fixer/lib/libFixer.a 
-LIBS += ../Fixer/lib/libFixer.a
-INCLUDEPATH += ../Fixer 
-TARGET = VbrfixConsole 
-CONFIG += warn_on \
-          stl \
-          console 
-TEMPLATE = app 
-HEADERS += ConsoleFixer.h 
+HEADERS += ConsoleFixer.h \
+           CommandReader.h 
 SOURCES += ConsoleFixer.cpp \
-           main.cpp 
+           main.cpp \
+           CommandReader.cpp 
+POST_TARGETDEPS += ../Fixer/lib/libFixer.a
+LIBS += ../Fixer/lib/libFixer.a
+INCLUDEPATH += ../Fixer
+TARGET = VbrfixConsole
+CONFIG += warn_on \
+stl \
+console
+TEMPLATE = app
