@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
-    <height>498</height>
+    <width>635</width>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -31,7 +31,15 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="QGroupBox" name="groupBox_2" >
+      <widget class="QGroupBox" name="addVbrTagToNonVbr" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>5</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="title" >
         <string>Fix Settings</string>
        </property>
@@ -43,16 +51,49 @@
          <number>6</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="keepLameInfo" >
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label" >
+            <property name="text" >
+             <string>Lame Tags</string>
+            </property>
+            <property name="buddy" >
+             <cstring>lameOption</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="lameOption" >
+            <property name="toolTip" >
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Choose how to treat Lame Tags&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="alwaysSkip" >
+          <property name="toolTip" >
+           <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">No Output, never write&lt;/p>&lt;/body>&lt;/html></string>
+          </property>
           <property name="text" >
-           <string>Keep Lame Info</string>
+           <string>Always Skip (For Testing / Information) - No output</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="alwaysSkip" >
+         <widget class="QCheckBox" name="skipNonVbr" >
+          <property name="toolTip" >
+           <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Don't try and fix non vbr mp3s&lt;/p>&lt;/body>&lt;/html></string>
+          </property>
           <property name="text" >
-           <string>Always Skip (For testing / Information) - No output</string>
+           <string>Skip Non-VBR Files (Only Fix VBR Files)</string>
           </property>
          </widget>
         </item>
@@ -65,9 +106,58 @@
            <number>6</number>
           </property>
           <item>
+           <widget class="QGroupBox" name="groupBox_2" >
+            <property name="title" >
+             <string>Remove Object Types</string>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>9</number>
+             </property>
+             <property name="spacing" >
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QCheckBox" name="removeId3v1Tags" >
+               <property name="text" >
+                <string>ID3v1 Tags</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="removeId3v2Tags" >
+               <property name="text" >
+                <string>ID3v2 Tags</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="removeUnknownData" >
+               <property name="text" >
+                <string>Unidentified Data (Any other tags / Data)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
            <widget class="QLabel" name="label_3_2_2_2_2" >
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Skip files less than&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">Skip Files Less Than&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+            <property name="buddy" >
+             <cstring>minPercentUnderstood</cstring>
             </property>
            </widget>
           </item>
@@ -87,7 +177,10 @@
           <item>
            <widget class="QLabel" name="label_4" >
             <property name="text" >
-             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">% understood&lt;/p>&lt;/body>&lt;/html></string>
+             <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">% Understood&lt;/p>&lt;/body>&lt;/html></string>
+            </property>
+            <property name="buddy" >
+             <cstring>minPercentUnderstood</cstring>
             </property>
            </widget>
           </item>
@@ -138,7 +231,7 @@
         <item>
          <widget class="QRadioButton" name="appendVbrfixed" >
           <property name="text" >
-           <string>Append "(vbrfixed)" to output filename</string>
+           <string>Append "(vbrfixed)" To Output Filename</string>
           </property>
          </widget>
         </item>
@@ -195,6 +288,9 @@
     </layout>
    </item>
    <item>
+    <widget class="QWidget" name="layoutWidget" />
+   </item>
+   <item>
     <layout class="QVBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -239,18 +335,27 @@
     </layout>
    </item>
   </layout>
-  <widget class="QWidget" name="layoutWidget" >
-   <property name="geometry" >
-    <rect>
-     <x>368</x>
-     <y>9</y>
-     <width>353</width>
-     <height>620</height>
-    </rect>
-   </property>
-  </widget>
  </widget>
  <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>lameOption</tabstop>
+  <tabstop>alwaysSkip</tabstop>
+  <tabstop>skipNonVbr</tabstop>
+  <tabstop>addVbrTagToNonVbr</tabstop>
+  <tabstop>removeId3v1Tags</tabstop>
+  <tabstop>removeId3v2Tags</tabstop>
+  <tabstop>removeUnknownData</tabstop>
+  <tabstop>minPercentUnderstood</tabstop>
+  <tabstop>promptForEach</tabstop>
+  <tabstop>replaceOriginals</tabstop>
+  <tabstop>appendVbrfixed</tabstop>
+  <tabstop>outputToDir</tabstop>
+  <tabstop>outputDir</tabstop>
+  <tabstop>browseOutputDir</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+  <tabstop>defaultButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

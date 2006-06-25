@@ -26,6 +26,8 @@
 #include "ui_settings.h"
 
 class Options;
+#include <vector>
+#include "FixerSettings.h"
 
 class VbrfixSettings: public QDialog, public Ui_Settings
 {
@@ -33,6 +35,7 @@ class VbrfixSettings: public QDialog, public Ui_Settings
 
 	public:
 		VbrfixSettings(QWidget *parent, Options &options);
+		virtual ~VbrfixSettings() {}
 
 	private slots:
 		void on_okButton_clicked();
@@ -45,6 +48,8 @@ class VbrfixSettings: public QDialog, public Ui_Settings
 		void syncFromGui();
 
 		Options& options;
+
+		std::vector<FixerSettings::LameOption> m_LameInfoIndex;
 
 };
 

@@ -31,7 +31,7 @@ class Options : public FixerSettings
 {
 	public:
 		Options();
-		~Options();
+		virtual ~Options();
 		QString getDestionationFile(QWidget* parentDialog, const QString& original) const;
 
 		enum OutputFileMethod {PROMPT, REPLACE_ORIGINAL, MP3_FIXED, DIRECTORY, NO_OUTPUT};

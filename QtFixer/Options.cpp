@@ -71,7 +71,7 @@ QString Options::getDestionationFile(QWidget* parentDialog, const QString & orig
 namespace
 {
 	template<class T >
-	void SaveLoadHelper(bool bSave, QSettings& settings, T& value, QString desc)
+	void SaveLoadHelper(bool bSave, QSettings& settings, T& value, const QString& desc)
 	{
 		if(bSave)
 		{
@@ -82,6 +82,14 @@ namespace
 			QVariant tmp = settings.value("settings/" + desc, QVariant(value));
 			value = tmp.value<T>();
 		}
+	}
+
+	template<class T >
+	void EnumSaveLoadHelper(bool bSave, QSettings& settings, T& value, const QString& desc)
+	{
+		int tmpValue = static_cast<T >(value);
+		SaveLoadHelper<int >(bSave, settings, tmpValue, desc);
+		value = static_cast<T >(tmpValue);
 	}
 }
 
@@ -119,17 +127,14 @@ void Options::SaveLoad(bool bSave)
 		settings.reset(new QSettings("Vbrfix", "WAP Vbrfix"));
 	}
 	
-	int tmpOutputMethod = static_cast<int>(outputMethod);
-	
 	SaveLoadHelper<QString >(bSave, *settings, outputDir, "Output Directory");
-	SaveLoadHelper<int >(bSave, *settings, tmpOutputMethod, "Output Method");
+	EnumSaveLoadHelper<OutputFileMethod >(bSave, *settings, outputMethod, "Output Method");
 	
-	SaveLoadHelper<bool >(bSave, *settings, m_KeepLameInfo, "Keep Lame Info");
+	EnumSaveLoadHelper<FixerSettings::LameOption >(bSave, *settings, m_LameInfoOption, "Lame Info Option");
 	SaveLoadHelper<bool >(bSave, *settings, m_AlwaysSkip, "Always Skip");
+	SaveLoadHelper<bool >(bSave, *settings, m_bSkipNonVbr, "Skip Non VBR");
 	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");
 	
-	
-	outputMethod = static_cast<OutputFileMethod >(tmpOutputMethod);
 }
 
 

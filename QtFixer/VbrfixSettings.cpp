@@ -30,14 +30,34 @@ VbrfixSettings::VbrfixSettings(QWidget *parent, Options &options)
     , options(options)
 {
 	setupUi(this);
+
+	lameOption->addItem("Remove");
+	m_LameInfoIndex.push_back(FixerSettings::LAME_REMOVE);
+	
+	lameOption->addItem("Keep VBR Tag Lame Info");
+	m_LameInfoIndex.push_back(FixerSettings::LAME_KEEP);
+	
+	lameOption->addItem("Keep VBR Tag Lame Info(recalculate the CRC) - experimental");
+	m_LameInfoIndex.push_back(FixerSettings::LAME_KEEP_CALC_TAG_CRC);
+	
 	syncGuiTo();
 }
 
 void VbrfixSettings::syncGuiTo()
 {
-	keepLameInfo->setChecked(options.KeepLameInfo());
+	std::vector<FixerSettings::LameOption>::iterator index = std::find(m_LameInfoIndex.begin(), m_LameInfoIndex.end(), options.LameInfoOption());
+	if(index != m_LameInfoIndex.end())
+	{
+		lameOption->setCurrentIndex(index - m_LameInfoIndex.begin());
+	}
+
 	alwaysSkip->setChecked(options.AlwaysSkip());
 	minPercentUnderstood->setValue(options.MinimumPercentUnderStood());
+
+	removeId3v1Tags->setChecked(options.RemoveType(Mp3ObjectType::ID3V1_TAG));
+	removeId3v2Tags->setChecked(options.RemoveType(Mp3ObjectType::ID3V2_TAG));
+	removeUnknownData->setChecked(options.RemoveType(Mp3ObjectType::UNKNOWN_DATA));
+	skipNonVbr->setChecked(options.skippingNonVbr());
 
 	// output method
 	QRadioButton* selected = NULL;
@@ -54,9 +74,16 @@ void VbrfixSettings::syncGuiTo()
 
 void VbrfixSettings::syncFromGui()
 {
-	options.SetKeepLameInfo(keepLameInfo->isChecked());
+	options.SetLameInfoOption(m_LameInfoIndex[lameOption->currentIndex()]);
+
 	options.SetAlwaysSkip(alwaysSkip->isChecked());
 	options.SetMinimumPercentUnderStood(minPercentUnderstood->value());
+
+	options.SetRemoveType(Mp3ObjectType::ID3V1_TAG, removeId3v1Tags->isChecked());
+	options.SetRemoveType(Mp3ObjectType::ID3V2_TAG, removeId3v2Tags->isChecked());
+	options.SetRemoveType(Mp3ObjectType::UNKNOWN_DATA, removeUnknownData->isChecked());
+
+	options.setSkippingNonVbr(skipNonVbr->isChecked());
 
 	// output method
 	Options::OutputFileMethod outMethod = Options::PROMPT;
@@ -91,6 +118,7 @@ void VbrfixSettings::on_cancelButton_clicked()
 {
 	done(QDialog::Rejected);
 }
+
 void VbrfixSettings::on_browseOutputDir_clicked()
 {
 	QString dir = QFileDialog::getExistingDirectory(this, tr("Select an Ouput Directory"), outputDir->text(), QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
