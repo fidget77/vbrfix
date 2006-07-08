@@ -408,7 +408,6 @@ void VbrfixMain::updateProgress( )
 	if(items && m_pCurrentFixItem)
 	{
 		int index = fixList->indexOfTopLevelItem(m_pCurrentFixItem);
-		bool considerCurrentFixed = true;
 		if(m_pCurrentFixItem->hasBeenProcessed())
 		{
 			++index;
