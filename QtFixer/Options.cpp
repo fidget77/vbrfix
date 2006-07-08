@@ -39,7 +39,22 @@ QString Options::getDestionationFile(QWidget* parentDialog, const QString & orig
 	{
 		case PROMPT:
 		{
-			dest = QFileDialog::getSaveFileName(parentDialog, "Save mp3 file to...", original, "Mpeg Layer 3(*.mp3)");
+			//dest = QFileDialog::getSaveFileName(parentDialog, "Save mp3 file to...", original, "Mpeg Layer 3(*.mp3)");
+			QFileDialog chooseFile(parentDialog, "Save file to...");
+			chooseFile.setDefaultSuffix(QFileInfo(original).completeSuffix());
+			chooseFile.setFileMode(QFileDialog::AnyFile);
+			chooseFile.setFilters(QStringList() << "Mpeg Layer 3 (*.mp3)" << "Any files (*)");
+			chooseFile.setAcceptMode(QFileDialog::AcceptSave);
+			chooseFile.setConfirmOverwrite(true);
+			chooseFile.selectFile(original);
+			if (chooseFile.exec())
+			{
+				QStringList files = chooseFile.selectedFiles();
+				if(!files.empty())
+				{
+					dest = files.front();
+				}
+			}
 			break;
 		}
 		case REPLACE_ORIGINAL:
