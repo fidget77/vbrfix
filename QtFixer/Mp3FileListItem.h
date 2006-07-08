@@ -28,15 +28,18 @@
 class Mp3FileListItem : public QTreeWidgetItem
 {
 	public:
+		enum CopyState {NOT_COPIED, COPY_OK, COPY_FAIL};
 		Mp3FileListItem(QTreeWidget *parent, const QString &fileName);
 		Mp3FileListItem(QTreeWidget *parent, QTreeWidgetItem * after, const QString &fileName);
 
-		~Mp3FileListItem();
+		virtual ~Mp3FileListItem();
 		const QString& getFileName() const {return fileName;}
 		const FixState::State& getState() const {return m_State;}
 		void setStatus(FixState::State newState) {m_State = newState;}
-		bool copySucceeded() const {return m_bCopySucceded;}
-		void setCopySucceeded(bool value)  { m_bCopySucceded = value;}
+		CopyState copyState() const {return m_CopyState;}
+		void setCopyState(CopyState value)  { m_CopyState = value;}
+		bool hasBeenProcessed() const {return m_bProcessed;}
+		void setHasBeenProcessed(bool value) { m_bProcessed = value;}
 
 		QString GetStatusString() const;
 
@@ -47,8 +50,9 @@ class Mp3FileListItem : public QTreeWidgetItem
 	private:
 		QString fileName;
 		FixState::State m_State;
-		bool m_bCopySucceded;
+		CopyState m_CopyState;
 		bool m_bError;
+		bool m_bProcessed;
 };
 
 #endif

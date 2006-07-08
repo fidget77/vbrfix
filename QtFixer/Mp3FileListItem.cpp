@@ -26,8 +26,9 @@ Mp3FileListItem::Mp3FileListItem( QTreeWidget * parent, QTreeWidgetItem * after,
 	: QTreeWidgetItem(parent, after)
 	, fileName(fileName)
 	, m_State(FixState::NOTSTARTED)
-	, m_bCopySucceded(false)
+	, m_CopyState(NOT_COPIED)
 	, m_bError(false)
+	, m_bProcessed(false)
 {
 }
 
@@ -35,7 +36,9 @@ Mp3FileListItem::Mp3FileListItem(QTreeWidget *parent, const QString &fileName)
 	: QTreeWidgetItem(parent)
 	, fileName(fileName)
 	, m_State(FixState::NOTSTARTED)
-	, m_bCopySucceded(false)
+	, m_CopyState(NOT_COPIED)
+	, m_bError(false)
+	, m_bProcessed(false)
 {
 }
 
@@ -59,7 +62,21 @@ QString Mp3FileListItem::GetStatusString( ) const
 		case ERROR: return "Failed";
 		case FIXED:
 		{
-			return m_bCopySucceded ? "Fixed" : "Copy Failed";
+			switch(m_CopyState)
+			{
+				case NOT_COPIED:
+				{
+					return "Ready To Copy"; 
+				}
+				case COPY_OK:
+				{
+					return "Fixed & Copied";
+				}
+				case COPY_FAIL:
+				{
+					return "Copy Failed";
+				}
+			}
 		}
 	}
 	return "Unknown";
