@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/vbrfix/icon" >
+        <file>vbrfixicon.png</file>
+    </qresource>
+</RCC>
