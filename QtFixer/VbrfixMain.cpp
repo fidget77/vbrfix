@@ -23,6 +23,7 @@
 #include "Mp3FileListItem.h"
 #include "VbrfixThread.h"
 #include "VbrfixSettings.h"
+#include "VbrfixAbout.h"
 
 #include "VbrFixer.h"
 #include "FeedBackInterface.h"
@@ -332,6 +333,7 @@ void VbrfixMain::threadGuiEvent(int eEvent)
 // move temp file depending on output options
 void VbrfixMain::finishedFixing()
 {
+	m_pCurrentFixItem->setHasBeenProcessed(true);
 	updateListItem(m_pCurrentFixItem, false);
 	Q_CHECK_PTR(m_pFixThread);
 	if(m_pFixThread)
@@ -354,7 +356,8 @@ void VbrfixMain::finishedFixing()
 
 				bool result = QFile::copy(m_pFixThread->getTempFileName(), destination);
 
-				m_pCurrentFixItem->setCopySucceeded(result);
+				m_pCurrentFixItem->setCopyState(result ? Mp3FileListItem::COPY_OK : Mp3FileListItem::COPY_FAIL);
+
 				if(!result)
 				{
 					Q_ASSERT(false);
@@ -364,7 +367,7 @@ void VbrfixMain::finishedFixing()
 			else
 			{
 				// can happen when someone presses cancel when promped for where to save the fixed version too
-				m_pCurrentFixItem->setCopySucceeded(false);
+				m_pCurrentFixItem->setCopyState(Mp3FileListItem::COPY_FAIL);
 				m_pFixThread->addLogMessage(Log::LogItem(Log::LOG_ERROR, "Couldn't choose destination for file"));
 			}
 		}
@@ -389,18 +392,13 @@ VbrfixMain::~VbrfixMain()
 
 void VbrfixMain::on_actionAbout_triggered()
 {
-	QMessageBox::about(this, "WAP VBRFIX", QString(tr("visit %1 for more information")).arg("www.willwap.co.uk"));
+	VbrfixAbout about(this);
+	about.exec();
 }
 
 void VbrfixMain::on_actionAbout_QT_triggered()
 {
 	QMessageBox::aboutQt(this);
-}
-
-void VbrfixMain::on_actionLicense_triggered()
-{
-	QMessageBox::information(this, "WAP VBRFIX", tr("Licenced under the GPL (http://www.gnu.org/copyleft/gpl.html), see the COPYING file that should have come with this."), QMessageBox::Ok);
-
 }
 
 void VbrfixMain::updateProgress( )
@@ -410,9 +408,14 @@ void VbrfixMain::updateProgress( )
 	if(items && m_pCurrentFixItem)
 	{
 		int index = fixList->indexOfTopLevelItem(m_pCurrentFixItem);
+		bool considerCurrentFixed = true;
+		if(m_pCurrentFixItem->hasBeenProcessed())
+		{
+			++index;
+		}
 		per = (100 * index) / items;
 	}
-	
+
 	totalProgress->setValue(per);
 }
 
@@ -425,7 +428,9 @@ void VbrfixMain::on_actionClear_Log_triggered( )
 void VbrfixMain::on_actionClear_Fix_List_triggered( )
 {
 	fixList->clear();
+	m_pCurrentFixItem = NULL;
 	updateButtons();
+	updateProgress();
 }
 
 void VbrfixMain::dragEnterEvent(QDragEnterEvent *event)
