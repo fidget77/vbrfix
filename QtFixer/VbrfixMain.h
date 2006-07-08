@@ -75,7 +75,6 @@ class VbrfixMain : public QMainWindow, private Ui_VbrfixMain
 		void on_actionClear_Fix_List_triggered();
 		void on_actionAbout_triggered();
 		void on_actionAbout_QT_triggered();
-		void on_actionLicense_triggered();
 
 		void on_goButton_clicked();
 		void on_stopButton_clicked();
