@@ -19,7 +19,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle" >
-   <string>Vbrfix (QT4)</string>
+   <string>WAP Vbrfix GPL</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="res.qrc" >:/vbrfix/icon/vbrfixicon.png</iconset>
@@ -119,14 +119,6 @@
      <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuAbout" >
-    <property name="title" >
-     <string>About</string>
-    </property>
-    <addaction name="actionAbout" />
-    <addaction name="actionAbout_QT" />
-    <addaction name="actionLicense" />
-   </widget>
    <widget class="QMenu" name="menuFile" >
     <property name="title" >
      <string>File</string>
@@ -142,6 +134,13 @@
     <addaction name="separator" />
     <addaction name="actionClear_Log" />
     <addaction name="actionClear_Fix_List" />
+   </widget>
+   <widget class="QMenu" name="menuAbout" >
+    <property name="title" >
+     <string>About</string>
+    </property>
+    <addaction name="actionAbout" />
+    <addaction name="actionAbout_QT" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuSettings" />
@@ -190,7 +189,6 @@
  </widget>
  <pixmapfunction></pixmapfunction>
  <resources>
-  <include location="res" />
   <include location="res.qrc" />
  </resources>
  <connections/>
