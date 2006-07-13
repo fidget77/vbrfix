@@ -118,7 +118,7 @@ namespace
 		}
 		else
 		{
-			const bool presentInSet = settings.value("settings/" + desc).value<bool>();
+			const bool presentInSet = settings.value("settings/" + desc).toBool();
 			if(presentInSet)
 			{
 				set.insert(setItem);
