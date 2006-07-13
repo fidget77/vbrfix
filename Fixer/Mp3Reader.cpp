@@ -29,6 +29,7 @@
 #include "UnknownDataObject.h"
 #include "Id3Tags.h"
 #include <sstream>
+#include <cassert>
 
 namespace
 {

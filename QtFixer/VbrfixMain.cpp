@@ -27,6 +27,7 @@
 
 #include "VbrFixer.h"
 #include "FeedBackInterface.h"
+#include <cassert>
 
 VbrfixMain::VbrfixMain(QWidget *parent)
         : QMainWindow(parent)

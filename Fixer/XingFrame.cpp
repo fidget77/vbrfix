@@ -29,6 +29,7 @@
 #include <cmath>
 #include <iostream>
 #include <iterator>
+#include <cassert>
 
 namespace
 {

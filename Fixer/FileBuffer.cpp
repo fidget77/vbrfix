@@ -23,6 +23,7 @@
 #include <iterator>
 #include <cmath>
 #include "EndianHelper.h"
+#include <cassert>
 
 FileBuffer::FileBuffer(const std::string& fileName)
 	: m_FileName(fileName)

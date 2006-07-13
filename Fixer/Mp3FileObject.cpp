@@ -23,6 +23,7 @@
 #include "FileBuffer.h"
 #include <algorithm>
 #include <functional>
+#include <cassert>
 
 void Mp3Object::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile ) const
 {

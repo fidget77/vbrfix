@@ -29,6 +29,7 @@
 #include "XingFrame.h"
 #include <fstream>
 #include <sstream>
+#include <cassert>
 
 namespace
 {

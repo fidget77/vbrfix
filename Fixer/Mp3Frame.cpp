@@ -24,6 +24,7 @@
 #include "Mp3Header.h"
 #include "FeedBackInterface.h"
 #include "XingFrame.h"
+#include <cassert>
 
 Mp3Frame * Mp3Frame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack)
 {
