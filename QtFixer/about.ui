@@ -48,7 +48,7 @@
          </font>
         </property>
         <property name="text" >
-         <string>VBRFix GPL - Please visit www.willwap.co.uk for more information</string>
+         <string>Vbrfix GPL - Please visit www.willwap.co.uk for more information</string>
         </property>
         <property name="pixmap" >
          <pixmap/>
@@ -174,7 +174,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="text" >
-           <string>A</string>
+           <string>B</string>
           </property>
           <property name="textFormat" >
            <enum>Qt::PlainText</enum>
