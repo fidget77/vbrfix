@@ -27,6 +27,7 @@
 Options::Options( )
 	: FixerSettings()
 	, outputMethod(PROMPT)
+	, m_bKeepSuffixIfNotSpecified(true)
 {
 }
 
@@ -41,20 +42,12 @@ QString Options::getDestionationFile(QWidget* parentDialog, const QString & orig
 	{
 		case PROMPT:
 		{
-			//dest = QFileDialog::getSaveFileName(parentDialog, "Save mp3 file to...", original, "Mpeg Layer 3(*.mp3)");
-			QFileDialog chooseFile(parentDialog, "Save file to...");
-			chooseFile.setDefaultSuffix(QFileInfo(original).completeSuffix());
-			chooseFile.setFileMode(QFileDialog::AnyFile);
-			chooseFile.setFilters(QStringList() << "Mpeg Layer 3 (*.mp3)" << "Any files (*)");
-			chooseFile.setAcceptMode(QFileDialog::AcceptSave);
-			chooseFile.setConfirmOverwrite(true);
-			chooseFile.selectFile(original);
-			if (chooseFile.exec())
+			dest = QFileDialog::getSaveFileName(parentDialog, "Save mp3 file to...", original, "Mpeg Layer 3(*.mp3)");
+			if(m_bKeepSuffixIfNotSpecified)
 			{
-				QStringList files = chooseFile.selectedFiles();
-				if(!files.empty())
+				if(QFileInfo(dest).suffix().isEmpty())
 				{
-					dest = files.front();
+					dest += "." + QFileInfo(original).suffix();
 				}
 			}
 			break;
@@ -171,10 +164,21 @@ void Options::SaveLoad(bool bSave)
 	EnumSaveLoadHelper<FixerSettings::LameOption >(bSave, *settings, m_LameInfoOption, "Lame Info Option");
 	SaveLoadHelper<bool >(bSave, *settings, m_AlwaysSkip, "Always Skip");
 	SaveLoadHelper<bool >(bSave, *settings, m_bSkipNonVbr, "Skip Non VBR");
-	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");
+	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");	
+	SaveLoadHelper<bool >(bSave, *settings, m_bKeepSuffixIfNotSpecified, "KeepSuffixIfNotSpecified");
 
 	// remove types
 	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::ID3V1_TAG), "RemoveId3v1"); 
 	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::ID3V2_TAG), "RemoveId3v2");
 	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::UNKNOWN_DATA), "RemoveUnknown");
+}
+
+void Options::setKeepSuffixIfNotSpecified( bool bKeep )
+{
+	m_bKeepSuffixIfNotSpecified = bKeep;
+}
+
+bool Options::keepSuffixIfNotSpecified( ) const
+{
+	return m_bKeepSuffixIfNotSpecified;
 }

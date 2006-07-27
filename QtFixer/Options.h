@@ -43,10 +43,13 @@ class Options : public FixerSettings
 		OutputFileMethod getOutputMethod() const {return outputMethod;}
 		QString getOutputDir() const {return outputDir;}
 		void setOutputDir(const QString& dir) {outputDir = dir;}
+		void setKeepSuffixIfNotSpecified(bool bKeep);
+		bool keepSuffixIfNotSpecified() const;
 
 	private:
 		OutputFileMethod outputMethod;
 		QString outputDir;
+		bool m_bKeepSuffixIfNotSpecified;
 
 		void SaveLoad(bool bSave);
 

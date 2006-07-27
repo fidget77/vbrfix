@@ -70,6 +70,8 @@ void VbrfixSettings::syncGuiTo()
 
 	//output dir
 	outputDir->setText(options.getOutputDir());
+	
+	allowEmptyExtensions->setChecked(options.keepSuffixIfNotSpecified());
 }
 
 void VbrfixSettings::syncFromGui()
@@ -100,6 +102,8 @@ void VbrfixSettings::syncFromGui()
 	{
 		options.setOutputDir(outputDir->text());
 	}
+	
+	options.setKeepSuffixIfNotSpecified(allowEmptyExtensions->isChecked());
 }
 
 void VbrfixSettings::on_okButton_clicked()

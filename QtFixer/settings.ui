@@ -17,7 +17,7 @@
   </property>
   <layout class="QHBoxLayout" >
    <property name="margin" >
-    <number>8</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
@@ -209,17 +209,37 @@
        </property>
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>8</number>
+         <number>9</number>
         </property>
         <property name="spacing" >
          <number>6</number>
         </property>
         <item>
-         <widget class="QRadioButton" name="promptForEach" >
-          <property name="text" >
-           <string>Prompt For Each</string>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
           </property>
-         </widget>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QRadioButton" name="promptForEach" >
+            <property name="text" >
+             <string>Prompt For Each</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="allowEmptyExtensions" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>Allow filesnames with no extension</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QRadioButton" name="replaceOriginals" >
@@ -288,9 +308,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="layoutWidget" />
-   </item>
-   <item>
     <layout class="QVBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -341,12 +358,12 @@
   <tabstop>lameOption</tabstop>
   <tabstop>alwaysSkip</tabstop>
   <tabstop>skipNonVbr</tabstop>
-  <tabstop>addVbrTagToNonVbr</tabstop>
   <tabstop>removeId3v1Tags</tabstop>
   <tabstop>removeId3v2Tags</tabstop>
   <tabstop>removeUnknownData</tabstop>
   <tabstop>minPercentUnderstood</tabstop>
   <tabstop>promptForEach</tabstop>
+  <tabstop>allowEmptyExtensions</tabstop>
   <tabstop>replaceOriginals</tabstop>
   <tabstop>appendVbrfixed</tabstop>
   <tabstop>outputToDir</tabstop>
@@ -369,8 +386,8 @@
      <y>444</y>
     </hint>
     <hint type="destinationlabel" >
-     <x>251</x>
-     <y>447</y>
+     <x>276</x>
+     <y>445</y>
     </hint>
    </hints>
   </connection>
@@ -381,12 +398,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>51</x>
-     <y>446</y>
+     <x>73</x>
+     <y>444</y>
     </hint>
     <hint type="destinationlabel" >
      <x>328</x>
      <y>442</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>promptForEach</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>allowEmptyExtensions</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>174</x>
+     <y>302</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>319</x>
+     <y>301</y>
     </hint>
    </hints>
   </connection>

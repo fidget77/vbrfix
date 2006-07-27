@@ -39,7 +39,7 @@
         <property name="font" >
          <font>
           <family>Sans Serif</family>
-          <pointsize>15</pointsize>
+          <pointsize>12</pointsize>
           <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
@@ -49,12 +49,6 @@
         </property>
         <property name="text" >
          <string>Vbrfix GPL - Please visit www.willwap.co.uk for more information</string>
-        </property>
-        <property name="pixmap" >
-         <pixmap/>
-        </property>
-        <property name="scaledContents" >
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -174,7 +168,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="text" >
-           <string>B</string>
+           <string>C</string>
           </property>
           <property name="textFormat" >
            <enum>Qt::PlainText</enum>
