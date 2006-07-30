@@ -43,7 +43,8 @@ QString Options::getDestionationFile(QWidget* parentDialog, const QString & orig
 		case PROMPT:
 		{
 			dest = QFileDialog::getSaveFileName(parentDialog, "Save mp3 file to...", original, "Mpeg Layer 3(*.mp3)");
-			if(m_bKeepSuffixIfNotSpecified)
+			const bool canceled = (dest == QString::null);
+			if(!canceled && m_bKeepSuffixIfNotSpecified)
 			{
 				if(QFileInfo(dest).suffix().isEmpty())
 				{
