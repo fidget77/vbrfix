@@ -11,7 +11,8 @@ HEADERS += Mp3FileListItem.h \
            VbrfixSettings.h \
            VbrfixThread.h \
            Options.h \
-           VbrfixAbout.h 
+           VbrfixAbout.h \
+           ComboManager.h 
 SOURCES += Main.cpp \
            Mp3FileListItem.cpp \
            VbrfixMain.cpp \
