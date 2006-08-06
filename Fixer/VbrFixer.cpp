@@ -193,6 +193,26 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			if(pOriginalFrame)
 			{
 				xingFrame->SetQuality( pOriginalFrame->GetQuality());
+				if(xingFrame->GetMp3Header().IsProtectedByCrc())
+				{
+					bool bRemoveCrc = false;
+					switch(m_rFixerSettings.GetXingFrameCrcOption())
+					{
+						case FixerSettings::CRC_REMOVE: 
+							bRemoveCrc = true; 
+							break;
+						case FixerSettings::CRC_KEEP_IF_CAN:
+							bRemoveCrc = !XingFrame::IsCrcUpdateSupported(xingFrame->GetMp3Header());
+							break;
+						case FixerSettings::CRC_KEEP: 
+							break;
+					}
+
+					if(bRemoveCrc)
+					{
+						xingFrame->GetMp3Header().RemoveCrcProtection();
+					}
+				}
 				if(m_rFixerSettings.KeepLameInfo())
 				{
 					xingFrame->SetLameData( pOriginalFrame->GetLameData() );
@@ -300,6 +320,11 @@ void VbrFixer::ProgressDetails::SetState( FixState::State eState )
 FixState::State VbrFixer::ProgressDetails::GetState( ) const
 {
 	return m_eState;
+}
+
+std::string VbrFixer::GetFixerVersion( )
+{
+	return "1(beta) D";
 }
 
 

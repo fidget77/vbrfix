@@ -57,6 +57,8 @@ class VbrFixer
 		void Fix(const std::string &sInFileName, const std::string &sOutFileName);
 
 		const ProgressDetails & GetProgressDetails() const {return m_ProgressDetails;}
+		
+		static std::string GetFixerVersion();
 
 	private:
 		FeedBackInterface & m_rFeedBackInterface;
