@@ -23,4 +23,5 @@
 namespace CrcHelper
 {
 	int CRC_update_lookup(int value, int crc);
+	int CrcMp3FrameUpdate(int value, int crc);
 }

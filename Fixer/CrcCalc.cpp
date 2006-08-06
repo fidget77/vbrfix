@@ -65,3 +65,20 @@ int CrcHelper::CRC_update_lookup(int value, int crc)
 	crc = (crc >> 8) ^ tab[tmp & 0xff];
 	return crc;
 }
+
+int CrcHelper::CrcMp3FrameUpdate(int value, int crc)
+{
+	const int CRC16_POLYNOMIAL = 0x8005;
+	value <<= 8;
+	for (int i = 0; i < 8; i++)
+	{
+		value <<= 1;
+		crc <<= 1;
+
+		if (((crc ^ value) & 0x10000))
+		{
+			crc ^= CRC16_POLYNOMIAL;
+		}
+	}
+	return crc;
+}
