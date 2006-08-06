@@ -86,3 +86,8 @@ const Mp3Header & Mp3Frame::GetMp3Header( ) const
 {
  	return m_Header;
 }
+
+Mp3Header & Mp3Frame::GetMp3Header( )
+{
+	return m_Header;
+}

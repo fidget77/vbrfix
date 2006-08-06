@@ -42,6 +42,7 @@ class Mp3Frame : public Mp3Object
 		virtual Mp3ObjectType GetObjectType() const {return Mp3ObjectType(Mp3ObjectType::FRAME);}
 
 		const Mp3Header& GetMp3Header() const;
+		Mp3Header& GetMp3Header();
 
 		virtual bool HasLameInfo() const {return false;} // this could change if we handle the info tag
 		
