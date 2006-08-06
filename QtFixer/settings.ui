@@ -199,6 +199,26 @@
           </item>
          </layout>
         </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="label_2" >
+            <property name="text" >
+             <string>Xing Frame CRC Protection Option</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="xingCrcFrameOption" />
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
      </item>
@@ -362,6 +382,7 @@
   <tabstop>removeId3v2Tags</tabstop>
   <tabstop>removeUnknownData</tabstop>
   <tabstop>minPercentUnderstood</tabstop>
+  <tabstop>xingCrcFrameOption</tabstop>
   <tabstop>promptForEach</tabstop>
   <tabstop>allowEmptyExtensions</tabstop>
   <tabstop>replaceOriginals</tabstop>
