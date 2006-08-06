@@ -25,6 +25,11 @@
 #include <iostream>
 #include "CommandReader.h"
 
+namespace
+{
+	std::string gConsoleVersionString = "-0";
+}
+
 ConsoleFixer::~ConsoleFixer()
 {
 }
@@ -41,7 +46,8 @@ void ConsoleFixer::addLogMessage( const Log::LogItem sMsg )
 
 bool ConsoleFixer::Run( )
 {
-	std::cout << "Vbrfix Console v0.7" << std::endl;
+	const std::string ConsoleVersion = VbrFixer::GetFixerVersion() + gConsoleVersionString;
+	std::cout << "Vbrfix Console version " << ConsoleVersion << std::endl;
 	FixerSettings settings;
 	VbrFixer fixer(*this, settings);
 	CommandReader cmdReader(m_Args);
@@ -58,7 +64,7 @@ bool ConsoleFixer::Run( )
 	{
 		std::cout << "Usage :" << std::endl;
 		std::cout << "./vbrfix [--option] [--option] in.mp3 out.mp3" << std::endl;
-		std::cout << "options (case sensitive):" << std::endl << "--removedid3v1" << std::endl << "--removedId3v2" << std::endl << "--removeUnknown" << std::endl << "--removeLame" << std::endl << "--keepLame" << std::endl << "--keepLameUpdateCrc" << std::endl;
+		std::cout << "options (case sensitive):" << std::endl << "--removedid3v1" << std::endl << "--removedId3v2" << std::endl << "--removeUnknown" << std::endl << "--removeLame" << std::endl << "--keepLame" << std::endl << "--keepLameUpdateCrc" << std::endl << "--XingFrameCrcProtectIfCan" << std::endl;
 	}
 	return true;
 }
@@ -97,6 +103,11 @@ bool ConsoleFixer::GetFixerSettingsFromOptions( FixerSettings & settings, const 
 		{
 			settings.SetLameInfoOption(FixerSettings::LAME_KEEP_CALC_TAG_CRC);
 			std::cout << "Keep Lame Update Crc on" << std::endl;
+		}
+		else if (option == "XingFrameCrcProtectIfCan")
+		{
+			settings.setXingFrameCrcOption(FixerSettings::CRC_KEEP_IF_CAN);
+			std::cout << "Xing Frame Crc protection if possible is on" << std::endl;
 		}
 		else
 		{
