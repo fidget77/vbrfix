@@ -84,6 +84,20 @@ namespace
 		std::vector<unsigned char> bytes = EndianHelper::ConvertToBigEndianBytes(uData);
 		collection.insert(collection.end(), bytes.begin(), bytes.end());		
 	}
+	
+	unsigned long CalculateFrameCrc(int sideInfoLen, const std::deque<unsigned char> &frameData)
+	{
+		int crc = 0xffff;
+		crc = CrcHelper::CrcMp3FrameUpdate(frameData[2], crc);
+		crc = CrcHelper::CrcMp3FrameUpdate(frameData[3], crc);
+		for (int i = 6; i < sideInfoLen; i++) 
+		{
+			crc = CrcHelper::CrcMp3FrameUpdate(frameData[i], crc);
+		}
+		
+		return crc;
+	}
+
 }
 
 void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile ) const
@@ -109,6 +123,24 @@ void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 	buffer.insert(buffer.end(), m_Toc.begin(), m_Toc.end());
 	
 	AddAsBigEndian(buffer, m_VbrScale);
+	
+	// frame crc if crc is on
+	if(m_Header.IsProtectedByCrc())
+	{
+		if(IsCrcUpdateSupported(m_Header))
+		{
+			const int sideInfoLen = iXingOffset + (m_Header.IsProtectedByCrc() ? 2 : 0);
+			const unsigned long uFrameCrc = CalculateFrameCrc(sideInfoLen, buffer);
+			const std::vector<unsigned char> bytes = EndianHelper::ConvertToBigEndianBytes(uFrameCrc);
+			// put into the buffer after the frame header (only last 2 bytes) as it's 16-bit
+			buffer[HEADER_BYTES] = bytes[2];
+			buffer[HEADER_BYTES + 1] = bytes[3];
+		}
+		else
+		{
+			throw "Xing Frame Crc update not supported on this type of mpeg audio file, please alter the options";
+		}
+	}
 
 	if(HasLameInfo())
 	{
@@ -152,7 +184,7 @@ void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 	// rest of space of frame
 	const unsigned long iRest = size() - buffer.size();
 	buffer.insert(buffer.end(), iRest, '\0');
-
+	
 	std::copy(buffer.begin(), buffer.end(), std::ostream_iterator<unsigned char>(rOutFile));
 }
 
@@ -280,6 +312,11 @@ void XingFrame::SetLameData( const std::vector< unsigned char > & lameData )
 const std::vector< unsigned char > & XingFrame::GetLameData( ) const
 {
 	return m_LameData;
+}
+
+bool XingFrame::IsCrcUpdateSupported( const Mp3Header & header )
+{
+	return (header.GetLayerVersion() == Mp3Header::LAYER_VERSION_3);
 }
 
 

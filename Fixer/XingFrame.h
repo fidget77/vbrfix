@@ -52,6 +52,8 @@ class XingFrame : public Mp3Frame
 
 		void SetRecalculateLameTagCrc(bool value) {m_bReCalculateLameCrc = value;}
 		
+		static bool IsCrcUpdateSupported(const Mp3Header & header);
+		
 	protected:
 		enum {NO_QUALITY = 0};
 		XingFrame(unsigned long iOldFilePos, const Mp3Header & header);
