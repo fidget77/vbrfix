@@ -21,36 +21,37 @@
 
 
 #include "VbrfixSettings.h"
+#include "ComboManager.h"
 #include "Options.h"
 #include <QtGui>
 
 VbrfixSettings::VbrfixSettings(QWidget *parent, Options &options)
-    : QDialog(parent)
-    , Ui_Settings()
-    , options(options)
+	: QDialog(parent)
+	, Ui_Settings()
+	, options(options)
+	, m_LameComboManager( new LameComboManager() )
+	, m_XingCrcComboManager( new XingCrcComboManager() )
 {
 	setupUi(this);
-
-	lameOption->addItem("Remove");
-	m_LameInfoIndex.push_back(FixerSettings::LAME_REMOVE);
+	m_LameComboManager->SetComboBox(lameOption);
+	m_XingCrcComboManager->SetComboBox(xingCrcFrameOption);
 	
-	lameOption->addItem("Keep VBR Tag Lame Info");
-	m_LameInfoIndex.push_back(FixerSettings::LAME_KEEP);
+	m_LameComboManager->AddItem(FixerSettings::LAME_REMOVE, "Remove");
+	m_LameComboManager->AddItem(FixerSettings::LAME_KEEP, "Keep VBR Tag Lame Info");
+	m_LameComboManager->AddItem(FixerSettings::LAME_KEEP_CALC_TAG_CRC, "Keep VBR Tag Lame Info(recalculate the CRC) - experimental");
 	
-	lameOption->addItem("Keep VBR Tag Lame Info(recalculate the CRC) - experimental");
-	m_LameInfoIndex.push_back(FixerSettings::LAME_KEEP_CALC_TAG_CRC);
+	m_XingCrcComboManager->AddItem(FixerSettings::CRC_REMOVE, "No CRC For Xing Frame");
+	m_XingCrcComboManager->AddItem(FixerSettings::CRC_KEEP_IF_CAN, "CRC For Xing Frame if Supported and MP3 has CRC");
+	m_XingCrcComboManager->AddItem(FixerSettings::CRC_KEEP, "CRC For Xing Frame if MP3 has CRC");
 	
 	syncGuiTo();
 }
 
 void VbrfixSettings::syncGuiTo()
 {
-	std::vector<FixerSettings::LameOption>::iterator index = std::find(m_LameInfoIndex.begin(), m_LameInfoIndex.end(), options.LameInfoOption());
-	if(index != m_LameInfoIndex.end())
-	{
-		lameOption->setCurrentIndex(index - m_LameInfoIndex.begin());
-	}
-
+	m_LameComboManager->SetSelection(options.LameInfoOption());
+	m_XingCrcComboManager->SetSelection(options.GetXingFrameCrcOption());
+	
 	alwaysSkip->setChecked(options.AlwaysSkip());
 	minPercentUnderstood->setValue(options.MinimumPercentUnderStood());
 
@@ -76,7 +77,9 @@ void VbrfixSettings::syncGuiTo()
 
 void VbrfixSettings::syncFromGui()
 {
-	options.SetLameInfoOption(m_LameInfoIndex[lameOption->currentIndex()]);
+	const FixerSettings defaults;
+	options.SetLameInfoOption(m_LameComboManager->GetSelection(defaults.LameInfoOption()));
+	options.setXingFrameCrcOption(m_XingCrcComboManager->GetSelection(defaults.GetXingFrameCrcOption()));
 
 	options.SetAlwaysSkip(alwaysSkip->isChecked());
 	options.SetMinimumPercentUnderStood(minPercentUnderstood->value());
@@ -130,4 +133,9 @@ void VbrfixSettings::on_browseOutputDir_clicked()
 	{
 		outputDir->setText(dir);
 	}
+}
+
+VbrfixSettings::~ VbrfixSettings( )
+{
+	
 }

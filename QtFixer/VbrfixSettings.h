@@ -29,13 +29,15 @@ class Options;
 #include <vector>
 #include "FixerSettings.h"
 
+template < class T > class ComboManager;
+
 class VbrfixSettings: public QDialog, public Ui_Settings
 {
 	Q_OBJECT
 
 	public:
 		VbrfixSettings(QWidget *parent, Options &options);
-		virtual ~VbrfixSettings() {}
+		virtual ~VbrfixSettings();
 
 	private slots:
 		void on_okButton_clicked();
@@ -48,8 +50,12 @@ class VbrfixSettings: public QDialog, public Ui_Settings
 		void syncFromGui();
 
 		Options& options;
+		
+		typedef ComboManager < FixerSettings::LameOption > LameComboManager;
+		typedef ComboManager < FixerSettings::XingFrameCrcOption > XingCrcComboManager;
 
-		std::vector<FixerSettings::LameOption> m_LameInfoIndex;
+		std::auto_ptr< LameComboManager > m_LameComboManager;
+		std::auto_ptr< XingCrcComboManager > m_XingCrcComboManager;
 
 };
 
