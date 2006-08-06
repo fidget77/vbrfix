@@ -35,6 +35,9 @@ VbrfixMain::VbrfixMain(QWidget *parent)
         , m_pCurrentFixItem(NULL)
 {
 	setupUi(this);
+	
+	setWindowTitle(windowTitle() + " version " + VbrfixAbout::GetFullVersion().c_str());
+	
 	QTreeWidgetItem* pHeaderItem = fixList->headerItem();
 	pHeaderItem->setText(C_Status, tr("Status"));
 	pHeaderItem->setText(C_File, tr("File"));

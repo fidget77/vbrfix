@@ -89,12 +89,12 @@
            </font>
           </property>
           <property name="text" >
-           <string>Major Version</string>
+           <string>Version</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="MajorVersion" >
+         <widget class="QLabel" name="FullVersion" >
           <property name="font" >
            <font>
             <family>Sans Serif</family>
@@ -113,7 +113,7 @@
            <enum>QFrame::Plain</enum>
           </property>
           <property name="text" >
-           <string>1(beta)</string>
+           <string>#</string>
           </property>
           <property name="textFormat" >
            <enum>Qt::PlainText</enum>
@@ -147,12 +147,12 @@
            </font>
           </property>
           <property name="text" >
-           <string>Minor Verison</string>
+           <string>Fixer Engine Version</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="MinorVersion" >
+         <widget class="QLabel" name="FixerVersion" >
           <property name="font" >
            <font>
             <family>Sans Serif</family>
@@ -168,7 +168,7 @@
            <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="text" >
-           <string>C</string>
+           <string>#</string>
           </property>
           <property name="textFormat" >
            <enum>Qt::PlainText</enum>

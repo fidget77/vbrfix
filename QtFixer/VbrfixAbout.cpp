@@ -22,9 +22,11 @@
 #include "VbrfixAbout.h"
 #include <string>
 #include <sstream>
+#include "VbrFixer.h"
 
 namespace
 {
+	std::string gGuiVersionString = "-0";
 	
 	void GetBuildDate(std::string& month, int & day, int & year)
 	{
@@ -49,11 +51,18 @@ VbrfixAbout::VbrfixAbout(QWidget *parent)
 	int day = 0, year = 0;
 	GetBuildDate(month, day, year);
 	BuildDate->setText(QString("%1 %2 %3").arg(day).arg(month.c_str()).arg(year));
+	FullVersion->setText(GetFullVersion().c_str());
+	FixerVersion->setText(VbrFixer::GetFixerVersion().c_str());
 }
 
 
 VbrfixAbout::~VbrfixAbout()
 {
+}
+
+std::string VbrfixAbout::GetFullVersion( )
+{
+	return VbrFixer::GetFixerVersion() + gGuiVersionString;
 }
 
 

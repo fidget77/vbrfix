@@ -31,6 +31,8 @@ class VbrfixAbout: public QDialog, public Ui_AboutDialog
 		VbrfixAbout(QWidget *parent);
 
 		virtual ~VbrfixAbout();
+		
+		static std::string GetFullVersion();
 
 };
 
