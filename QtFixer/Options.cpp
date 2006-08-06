@@ -163,6 +163,9 @@ void Options::SaveLoad(bool bSave)
 	EnumSaveLoadHelper<OutputFileMethod >(bSave, *settings, outputMethod, "Output Method");
 	
 	EnumSaveLoadHelper<FixerSettings::LameOption >(bSave, *settings, m_LameInfoOption, "Lame Info Option");
+	
+	EnumSaveLoadHelper<FixerSettings::XingFrameCrcOption >(bSave, *settings, m_XingFrameCrcOption, "Xing Frame Crc Option");
+	
 	SaveLoadHelper<bool >(bSave, *settings, m_AlwaysSkip, "Always Skip");
 	SaveLoadHelper<bool >(bSave, *settings, m_bSkipNonVbr, "Skip Non VBR");
 	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");	
