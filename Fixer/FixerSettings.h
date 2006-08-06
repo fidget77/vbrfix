@@ -62,6 +62,9 @@ class FixerSettings
 
 		bool skippingNonVbr() const { return m_bSkipNonVbr;}
 		void setSkippingNonVbr(bool bSkip) { m_bSkipNonVbr = bSkip;}
+		enum XingFrameCrcOption { CRC_REMOVE, CRC_KEEP_IF_CAN, CRC_KEEP};
+		XingFrameCrcOption GetXingFrameCrcOption() const {return m_XingFrameCrcOption;}
+		void setXingFrameCrcOption(XingFrameCrcOption e) {m_XingFrameCrcOption = e;}
 		
 	protected:
 		Mp3ObjectType::Set m_RemoveTypes;
@@ -70,6 +73,7 @@ class FixerSettings
 		bool m_bLogDetail;
 		LameOption m_LameInfoOption;
 		bool m_bSkipNonVbr;
+		XingFrameCrcOption m_XingFrameCrcOption;
 		
 };
 

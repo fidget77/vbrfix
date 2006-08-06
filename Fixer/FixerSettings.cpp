@@ -27,6 +27,7 @@ FixerSettings::FixerSettings( )
 	, m_bLogDetail(true)
 	, m_LameInfoOption(LAME_KEEP)
 	, m_bSkipNonVbr(true)
+	, m_XingFrameCrcOption(CRC_REMOVE)
 {
 	m_RemoveTypes.insert(Mp3ObjectType::XING_FRAME);
 }
