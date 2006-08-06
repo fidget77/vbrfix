@@ -31,7 +31,7 @@ namespace
 	const IndexMask SYNC_MASK(21, 11);
 	const IndexMask MPEG_MASK(19, 2);
 	const IndexMask LAYER_MASK(17, 2);
-	const IndexMask PROTECTED_MASK(16);
+	const IndexMask NOT_CRC_PROTECTED_MASK(16);
 	const IndexMask BITRATE_MASK(12, 4);
 	const IndexMask SAMPFREQ_MASK(10, 2);
 	const IndexMask PADDING_MASK(9);
@@ -76,7 +76,7 @@ Mp3Header::MpegLayerVersion Mp3Header::GetLayerVersion( ) const
 
 bool Mp3Header::IsProtectedByCrc( ) const
 {
-	return PROTECTED_MASK.IsOn(m_Header);
+	return !NOT_CRC_PROTECTED_MASK.IsOn(m_Header);
 }
 
 bool Mp3Header::IsPadded( ) const
@@ -296,5 +296,10 @@ bool Mp3Header::IncreaseBitrate( )
 		return true;
 	}
 	return false;
+}
+
+void Mp3Header::RemoveCrcProtection( )
+{
+	NOT_CRC_PROTECTED_MASK.SetOn(m_Header, true);
 }
 

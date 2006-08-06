@@ -70,6 +70,8 @@ class Mp3Header
 		_ul32 GetHeader() const {return m_Header;}
 
 		bool IncreaseBitrate();
+		
+		void RemoveCrcProtection();
 
 	private:
 		enum {HEADER_BITS = 32};
