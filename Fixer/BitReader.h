@@ -63,5 +63,9 @@ class IndexMask
 			bits &= (~m_mask); // remove current value
 			bits |= (m_mask & (iIndex << m_maskShift));
 		}
+		void SetOn(_ul32 &bits, bool bValue) const
+		{
+			SetIndex(bits, bValue ? 1 : 0);
+		}
 };
 #endif
