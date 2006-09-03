@@ -482,6 +482,8 @@ QString VbrfixMain::GetGuiNameForMp3ObjectType(Mp3ObjectType eType)
 		case Mp3ObjectType::FRAME: return tr("Frame");
 		case Mp3ObjectType::ID3V1_TAG: return tr("Id3v1");
 		case Mp3ObjectType::ID3V2_TAG: return tr("Id3v2");
+		case Mp3ObjectType::LYRICS_TAG: return tr("Lyrics3");
+		case Mp3ObjectType::APE_TAG: return tr("Ape");
 		case Mp3ObjectType::UNKNOWN_DATA: return tr("Unknown");
 		default : break;
 	}
