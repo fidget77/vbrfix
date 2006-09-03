@@ -22,7 +22,7 @@
 #ifndef MP3FILEOBJECT_H
 #define MP3FILEOBJECT_H
 
-#include <fstream>
+#include <iosfwd>
 #include <set>
 
 class FileBuffer;
@@ -36,7 +36,9 @@ class Mp3ObjectType
 			FRAME,
 			XING_FRAME,
 			ID3V1_TAG,
-			ID3V2_TAG
+			ID3V2_TAG,
+			LYRICS_TAG,
+			APE_TAG
 		};
 		
 		typedef std::set<ObjectId> ObjectIdSet;

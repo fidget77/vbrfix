@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <cassert>
+#include <fstream>
 
 void Mp3Object::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile ) const
 {
@@ -93,7 +94,7 @@ bool Mp3ObjectType::IsTypeOfFrame( ) const
 
 bool Mp3ObjectType::IsTypeOfTag( ) const
 {
-	return (m_Type == ID3V1_TAG || m_Type == ID3V2_TAG);
+	return (m_Type == ID3V1_TAG || m_Type == ID3V2_TAG || m_Type == APE_TAG || m_Type == LYRICS_TAG);
 }
 
 bool Mp3ObjectType::IsUnknown( ) const
