@@ -292,6 +292,8 @@ int VbrFixer::ProgressDetails::GetTotalPercent( ) const
 
 bool VbrFixer::ShouldSkipMp3( const Mp3Reader::ConstMp3ObjectList & /*frames*/ ) const
 {
+	#warning "TODO ensure that if any LOG_ERROR messages were logged then the mp3 will fail"
+	
 	if(m_rFixerSettings.MinimumPercentUnderStood() > m_ProgressDetails.GetPercentUnderstood())
 	{
 		std::stringstream ss;
