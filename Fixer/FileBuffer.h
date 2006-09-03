@@ -31,8 +31,8 @@
 class FileBuffer
 {
 	public:
-		typedef std::istream::streamoff pos_type;
-		typedef std::istream::streamoff off_type;
+		typedef std::istream::pos_type pos_type;
+		typedef std::istream::off_type off_type;
 		
 		FileBuffer(const std::string &fileName);
 		virtual ~FileBuffer();
