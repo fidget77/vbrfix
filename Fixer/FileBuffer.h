@@ -22,41 +22,48 @@
 #ifndef FILEBUFFER_H
 #define FILEBUFFER_H
 
-#include <fstream>
+#include <iosfwd>
+#include <fstream> // still needed for std::istream::streamoff
+#include <memory>
 #include <deque>
+#include <string>
 
 class FileBuffer
 {
 	public:
+		typedef std::istream::streamoff pos_type;
+		typedef std::istream::streamoff off_type;
+		
 		FileBuffer(const std::string &fileName);
 		virtual ~FileBuffer();
 
-		unsigned char operator [] (unsigned int i) const;
+		unsigned char operator [] (off_type i) const;
 
-		unsigned long GetFromBigEndianToNative(unsigned int iStartingfromByte = 0) const;
+		unsigned long GetFromBigEndianToNative(off_type iStartingfromByte = 0) const;
+		unsigned long GetFromLitleEndianToNative( off_type iStartingfromByte = 0) const;
 
-		bool CanRead(unsigned int iCount) const;
+		bool CanRead(off_type iCount) const;
 
-		bool proceed(unsigned int i);
+		bool proceed(off_type i);
 
-		bool setPosition(unsigned long iPos);
-		bool readIntoBuffer(unsigned char * pBuffer, unsigned int iSize);
+		bool setPosition(pos_type iPos);
+		bool readIntoBuffer(unsigned char * pBuffer, off_type iSize);
 
-		bool DoesSay(std::string sText, int iStartingfromByte = 0) const;
+		bool DoesSay(const std::string& sText, off_type iStartingfromByte = 0) const;
 
 		bool isDataLeft() const;
 
 		void reopen();
 
-		unsigned long position() const;
+		pos_type position() const;
 
-		unsigned long GetLength() const {return m_Length;}
+		pos_type GetLength() const {return m_Length;}
 		
 	private:
-		mutable std::ifstream m_Stream;
+		const std::auto_ptr<std::ifstream> m_Stream;
 		mutable std::deque<unsigned char> m_InternalBuffer;
 		const std::string m_FileName;
-		unsigned long m_Length;
+		pos_type m_Length;
 };
 
 #endif
