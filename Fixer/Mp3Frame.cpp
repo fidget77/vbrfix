@@ -39,7 +39,7 @@ Mp3Frame * Mp3Frame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface 
 		{
 			if(testMp3Header.IsFreeBitrate())
 			{
-				feedBack.addLogMessage(Log::LOG_ERROR, "Frame uses free bitrate, not supported");
+				throw "Frame uses free bitrate, not supported";
 			}
 			else
 			{
