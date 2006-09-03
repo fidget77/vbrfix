@@ -18,7 +18,8 @@ HEADERS += BitReader.h \
            Id3Tags.h \
            XingFrame.h \
            EndianHelper.h \
-           CrcCalc.h 
+           CrcCalc.h \
+           ApeTag.h 
 SOURCES += FileBuffer.cpp \
            Mp3Frame.cpp \
            Mp3Header.cpp \
@@ -30,7 +31,8 @@ SOURCES += FileBuffer.cpp \
            XingFrame.cpp \
            Mp3FileObject.cpp \
            EndianHelper.cpp \
-           CrcCalc.cpp 
+           CrcCalc.cpp \
+           ApeTag.cpp 
 CONFIG += warn_on \
 staticlib \
 exceptions \
