@@ -68,6 +68,19 @@ namespace EndianHelper
 		uResult |= pBuffer[3];
 		return uResult;
 	}
+	
+	unsigned long ConvertToNativeFromLittleEndian( unsigned char * pBuffer )
+	{
+		unsigned long uResult;
+		uResult = pBuffer[3];
+		uResult <<= 8;
+		uResult |= pBuffer[2];
+		uResult <<= 8;
+		uResult |= pBuffer[1];
+		uResult <<= 8;
+		uResult |= pBuffer[0];
+		return uResult;
+	}
 
 	std::vector< unsigned char > ConvertToBigEndianBytes( unsigned long uData )
 	{
