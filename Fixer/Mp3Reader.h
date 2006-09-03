@@ -25,6 +25,7 @@
 #include "Mp3FileObject.h"
 
 #include <list>
+#include <istream>
 #include <vector>
 #include <set>
 #include "Mp3Header.h"
@@ -36,10 +37,13 @@ class Mp3Reader
 	public:
 		class ReadProgressDetails
 		{
+			typedef std::istream::streamoff pos_type;
+			typedef std::istream::streamoff off_type;
+		
 			public:
 				ReadProgressDetails();
 				int GetPercentUnderstood() const;
-				int GetFrameCount() const;
+				unsigned long GetFrameCount() const;
 				int GetAverageBitrate() const;
 				bool IsVbr() const;
 
@@ -47,16 +51,16 @@ class Mp3Reader
 
 				void foundObject(const Mp3Object * object);
 				void setPercentOfRead(int i) {m_iPercentOfRead = i;}
-				void setFileSize(int iFileSize) {m_FileSize = iFileSize;}
+				void setFileSize(pos_type iFileSize) {m_FileSize = iFileSize;}
 			protected:
 				int m_iPercentOfRead;
 				Mp3ObjectType::Set m_foundObjects;
-				int m_iFrames;
-				int m_iUnknownData;
+				unsigned long m_iFrames;
+				off_type m_iUnknownData;
 				bool m_Cbr; // constant bitrate or variable bitrate
-				int m_TotalBitrate;
-				int m_LastBitrate;
-				int m_FileSize;
+				long m_TotalBitrate;
+				long m_LastBitrate;
+				pos_type m_FileSize;
 				std::vector<Mp3Header::MpegVersion> m_MpegTypes;
 				std::vector<Mp3Header::MpegVersion> m_Layers;
 		};

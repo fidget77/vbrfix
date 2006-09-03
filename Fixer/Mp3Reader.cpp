@@ -28,6 +28,7 @@
 #include "FileBuffer.h"
 #include "UnknownDataObject.h"
 #include "Id3Tags.h"
+#include "ApeTag.h"
 #include <sstream>
 #include <cassert>
 
@@ -51,8 +52,8 @@ Mp3Reader::Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, Re
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Mp3Frame>());
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Id3v1Tag>());
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Id3v2Tag>());
-	//m_ObjectCheckers.push_back(new Mp3FileObjectChecker<ApeTag>());
-	//m_ObjectCheckers.push_back(new Mp3FileObjectChecker<Lyrics3Tag>());
+	m_ObjectCheckers.push_back(new Mp3ObjectChecker<ApeTag>());
+	//m_ObjectCheckers.push_back(new Mp3ObjectChecker<Lyrics3Tag>());
 }
 
 
@@ -164,12 +165,17 @@ void Mp3Reader::ReadProgressDetails::foundObject( const Mp3Object * object )
 
 int Mp3Reader::ReadProgressDetails::GetPercentUnderstood( ) const
 {
-	if(m_FileSize == 0) return 0;
-	assert(m_iUnknownData <= m_FileSize);
-	return (100 * (m_FileSize - m_iUnknownData)) / m_FileSize;
+	int percent = 0;
+	if(m_FileSize > 0)
+	{
+		assert(m_iUnknownData <= m_FileSize);
+		percent = (m_FileSize - m_iUnknownData) / (m_FileSize / 100);
+		assert(percent >= 0 && percent <= 100);
+	}
+	return percent;
 }
 
-int Mp3Reader::ReadProgressDetails::GetFrameCount( ) const
+unsigned long Mp3Reader::ReadProgressDetails::GetFrameCount( ) const
 {
 	return m_iFrames;
 }
