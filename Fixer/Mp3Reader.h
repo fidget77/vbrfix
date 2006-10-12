@@ -30,7 +30,7 @@
 #include <set>
 #include "Mp3Header.h"
 
-class FileBuffer; class Mp3ObjectCheckerInterface; class FeedBackInterface;
+class FileBuffer; class Mp3ObjectCheckerInterface; class FeedBackInterface; class ReadSettings;
 
 class Mp3Reader
 {
@@ -66,7 +66,7 @@ class Mp3Reader
 		};
 		typedef std::list<const Mp3Object*> ConstMp3ObjectList;
 
-		Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, ReadProgressDetails& progessDetails);
+		Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, ReadProgressDetails& progessDetails, const ReadSettings & readSettings);
 		virtual ~Mp3Reader();
 
 		bool ReadMp3();
@@ -85,6 +85,7 @@ class Mp3Reader
 		FileBuffer & m_rMp3FileBuffer;
 		FeedBackInterface & m_rFeedBack;
 		ReadProgressDetails& m_rProgessDetails;
+		const ReadSettings& m_readSettings;
 };
 
 #endif

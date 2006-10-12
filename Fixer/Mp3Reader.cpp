@@ -44,10 +44,11 @@ namespace
 	};
 }
 
-Mp3Reader::Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, ReadProgressDetails& progressDetails)
+Mp3Reader::Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, ReadProgressDetails& progressDetails, const ReadSettings & readSettings)
 	: m_rMp3FileBuffer(mp3FileBuffer)
 	, m_rFeedBack(feedBack)
 	, m_rProgessDetails(progressDetails)
+	, m_readSettings(readSettings)
 {
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Mp3Frame>());
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Id3v1Tag>());
@@ -94,7 +95,8 @@ bool Mp3Reader::ReadMp3( )
 		for(ObjectCheckerList::const_iterator iter = m_ObjectCheckers.begin(); iter != m_ObjectCheckers.end(); ++iter)
 		{
 			// can we identify the object at the position in the filebuffer
-			pFoundObject = (*iter)->Check(m_rMp3FileBuffer, m_rFeedBack);
+			CheckParameters params(m_rMp3FileBuffer, m_rFeedBack, m_readSettings);
+			pFoundObject = (*iter)->Check(params);
 			if(pFoundObject)
 			{
 				m_rProgessDetails.foundObject(pFoundObject);
