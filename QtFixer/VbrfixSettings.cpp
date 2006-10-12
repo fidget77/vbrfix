@@ -54,9 +54,14 @@ void VbrfixSettings::syncGuiTo()
 	
 	alwaysSkip->setChecked(options.AlwaysSkip());
 	minPercentUnderstood->setValue(options.MinimumPercentUnderStood());
+	
+	treatFreeFormatAsUnkown->setChecked(options.getTreatFreeFormatFramesAsUnknownData());
 
+	removeXingTags->setChecked(options.RemoveType(Mp3ObjectType::XING_FRAME));
+	removeVbriTags->setChecked(options.RemoveType(Mp3ObjectType::VBRI_FRAME));
 	removeId3v1Tags->setChecked(options.RemoveType(Mp3ObjectType::ID3V1_TAG));
 	removeId3v2Tags->setChecked(options.RemoveType(Mp3ObjectType::ID3V2_TAG));
+	removeApeTags->setChecked(options.RemoveType(Mp3ObjectType::APE_TAG));
 	removeUnknownData->setChecked(options.RemoveType(Mp3ObjectType::UNKNOWN_DATA));
 	skipNonVbr->setChecked(options.skippingNonVbr());
 
@@ -83,9 +88,14 @@ void VbrfixSettings::syncFromGui()
 
 	options.SetAlwaysSkip(alwaysSkip->isChecked());
 	options.SetMinimumPercentUnderStood(minPercentUnderstood->value());
+	
+	options.setTreatFreeFormatFramesAsUnknownData(treatFreeFormatAsUnkown->isChecked());
 
+	options.SetRemoveType(Mp3ObjectType::XING_FRAME, removeXingTags->isChecked());
+	options.SetRemoveType(Mp3ObjectType::VBRI_FRAME, removeVbriTags->isChecked());
 	options.SetRemoveType(Mp3ObjectType::ID3V1_TAG, removeId3v1Tags->isChecked());
 	options.SetRemoveType(Mp3ObjectType::ID3V2_TAG, removeId3v2Tags->isChecked());
+	options.SetRemoveType(Mp3ObjectType::APE_TAG, removeApeTags->isChecked());
 	options.SetRemoveType(Mp3ObjectType::UNKNOWN_DATA, removeUnknownData->isChecked());
 
 	options.setSkippingNonVbr(skipNonVbr->isChecked());
