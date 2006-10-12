@@ -37,8 +37,10 @@ ApeTag::~ApeTag()
 {
 }
 
-ApeTag * ApeTag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack )
+ApeTag * ApeTag::Check(CheckParameters & rParams)
 {
+	const FileBuffer& mp3FileBuffer(rParams.m_mp3FileBuffer);
+	
 	#warning "TODO introduce a iterator wrapper around the FileBuffer object to improve the code here"
 	const std::string sStartIdentifier = "APETAGEX";
 	
@@ -65,7 +67,7 @@ ApeTag * ApeTag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & fe
 					if(footerHeaderBit.IsOn( uFlags ))
 					{
 						size += 32; // add size of header as the read size excludes the header 
-						feedBack.addLogMessage(Log::LOG_INFO, "Found Ape Tag");
+						rParams.m_feedBack.addLogMessage(Log::LOG_INFO, "Found Ape Tag");
 						return new ApeTag(mp3FileBuffer.position(), size);
 					}
 					else
@@ -75,12 +77,12 @@ ApeTag * ApeTag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & fe
 				}
 				else
 				{
-					feedBack.addLogMessage( Log::LOG_WARNING, "APE tag goes off end of the file, treating as unknown data");
+					rParams.m_feedBack.addLogMessage( Log::LOG_WARNING, "APE tag goes off end of the file, treating as unknown data");
 				}
 			}
 			else
 			{
-				feedBack.addLogMessage( Log::LOG_WARNING, "APE tag with unknown version found, treating as unknown data");
+				rParams.m_feedBack.addLogMessage( Log::LOG_WARNING, "APE tag with unknown version found, treating as unknown data");
 			}
 		}
 	}

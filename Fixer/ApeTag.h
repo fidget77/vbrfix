@@ -24,13 +24,11 @@
 
 #include "Mp3FileObject.h"
 
-class FeedBackInterface; class FileBuffer;
-
 class ApeTag : public Mp3Object
 {
 	public:
 		virtual ~ApeTag();
-		static ApeTag* Check(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack);
+		static ApeTag* Check(CheckParameters & rParams);
 
 		virtual unsigned long size() const;
 		virtual Mp3ObjectType GetObjectType() const {return Mp3ObjectType(Mp3ObjectType::APE_TAG);}
