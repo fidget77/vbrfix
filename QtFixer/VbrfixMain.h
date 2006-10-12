@@ -27,6 +27,7 @@
 
 #include "VbrfixThread.h"
 #include "Options.h"
+#include <string>
 
 class VbrfixThread; class Mp3FileListItem; class QDir; class QStringList; class QProgressDialog;
 
@@ -64,7 +65,7 @@ class VbrfixMain : public QMainWindow, private Ui_VbrfixMain
 
 		void dropEvent(QDropEvent *event);
 
-		static QString GetGuiNameForMp3ObjectType(Mp3ObjectType eType);
+		static std::string GetGuiNameForMp3ObjectType(Mp3ObjectType eType);
 
 	private slots:
 

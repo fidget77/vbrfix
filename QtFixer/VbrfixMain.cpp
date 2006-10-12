@@ -28,6 +28,9 @@
 #include "VbrFixer.h"
 #include "FeedBackInterface.h"
 #include <cassert>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
 
 VbrfixMain::VbrfixMain(QWidget *parent)
         : QMainWindow(parent)
@@ -110,7 +113,7 @@ void VbrfixMain::fixAnother()
 		}
 		m_pFixThread = new VbrfixThread(m_Options, fixItem->getFileName());
 		bool bOK = connect(m_pFixThread, SIGNAL(guiEvent(int)), this, SLOT(threadGuiEvent(int)));
-		assert(bOK); // something has gone wring with the gui
+		assert(bOK); // something has gone wrong with the gui
 		
 		fixList->setCurrentItem(fixItem);
 		m_pFixThread->start();
@@ -121,8 +124,8 @@ void VbrfixMain::fixAnother()
 
 void VbrfixMain::updateButtons()
 {
-	bool fixing = m_pFixThread && m_pFixThread->isRunning();
-	bool toFix = (getNextItemToBeFixed() != NULL);
+	const bool fixing = m_pFixThread && m_pFixThread->isRunning();
+	const bool toFix = (getNextItemToBeFixed() != NULL);
 	goButton->setEnabled(toFix && !fixing);
 	stopButton->setEnabled(fixing);
 	actionClear_Log->setEnabled(!logText->toPlainText().isEmpty());
@@ -171,7 +174,7 @@ void VbrfixMain::commonAddDir(bool recursively)
 	// Ask user for the directory to add
 	QString title(tr("Choose a directory of mp3s to add "));
 	title += (recursively ? tr("recursively") : tr("non-recursively"));
-	QString dir = QFileDialog::getExistingDirectory(this, title, QString::null, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	const QString dir = QFileDialog::getExistingDirectory(this, title, QString::null, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 	
 	if(dir != QString::null)
 	{
@@ -236,6 +239,10 @@ void VbrfixMain::updateListItem(Mp3FileListItem* fixItem, bool firstTime)
 	{
 		if(firstTime)
 		{
+			for(int iCol = 0; iCol < fixList->headerItem()->columnCount(); ++iCol)
+			{
+				fixItem->setText(iCol, tr("-"));
+			}
  		 	fixItem->setText(C_File, fixItem->getFileName());
 		}
 		else
@@ -248,20 +255,23 @@ void VbrfixMain::updateListItem(Mp3FileListItem* fixItem, bool firstTime)
 
 				VbrFixer::ProgressDetails progress = m_pFixThread->GetFixProgressDetails();
 
+				// get all object types found so far
 				typedef Mp3ObjectType::Set::const_iterator FndObjIter;
-				QString tags;
-				const Mp3ObjectType::Set& fndObjTypes = progress.GetFoundObjectTypes();
-				for(FndObjIter iter = fndObjTypes.begin(); iter != fndObjTypes.end(); ++iter)
-				{
-					if(iter->IsTypeOfTag())
-					{
-						if(tags.length() != 0) tags += " ";
-						tags +=	GetGuiNameForMp3ObjectType(*iter);
-					}
-				}
+				Mp3ObjectType::Set dispObjTypes = progress.GetFoundObjectTypes();
+				
+				// remove the object types we don't want to show
+				dispObjTypes.erase(Mp3ObjectType(Mp3ObjectType::FRAME));
+				dispObjTypes.erase(Mp3ObjectType(Mp3ObjectType::UNKNOWN_DATA));
+				
+				// convert them to a string
+				std::stringstream ssDispTypes;
+				std::transform(dispObjTypes.begin(), dispObjTypes.end(),
+				       std::ostream_iterator<std::string>(ssDispTypes, " "),
+				       std::ptr_fun(&VbrfixMain::GetGuiNameForMp3ObjectType));
+				
 				fixItem->setText(C_Percent, QString("%1%").arg(progress.GetTotalPercent()));
 				fixItem->setText(C_BitRate, QString("%1 kbps %2").arg(progress.GetAverageBitrate()).arg(progress.IsVbr() ? "(VBR)" : "(CBR)"));
-				fixItem->setText(C_Tags, tags);
+				fixItem->setText(C_Tags, ssDispTypes.str().c_str());
 				fixItem->setText(C_PercentUnderstood, QString("%1%").arg(progress.GetPercentUnderstood()));
 				fixItem->setText(C_Frames, QString("%1").arg(progress.GetFrameCount()));
 			}
@@ -475,16 +485,18 @@ void VbrfixMain::dropEvent(QDropEvent *event)
 	}
 }
 
-QString VbrfixMain::GetGuiNameForMp3ObjectType(Mp3ObjectType eType)
+std::string VbrfixMain::GetGuiNameForMp3ObjectType(Mp3ObjectType eType)
 {
 	switch(eType.GetObjectId())
 	{
-		case Mp3ObjectType::FRAME: return tr("Frame");
-		case Mp3ObjectType::ID3V1_TAG: return tr("Id3v1");
-		case Mp3ObjectType::ID3V2_TAG: return tr("Id3v2");
-		case Mp3ObjectType::LYRICS_TAG: return tr("Lyrics3");
-		case Mp3ObjectType::APE_TAG: return tr("Ape");
-		case Mp3ObjectType::UNKNOWN_DATA: return tr("Unknown");
+		case Mp3ObjectType::FRAME: return "Frame";
+		case Mp3ObjectType::ID3V1_TAG: return "Id3v1";
+		case Mp3ObjectType::ID3V2_TAG: return "Id3v2";
+		case Mp3ObjectType::LYRICS_TAG: return "Lyrics3";
+		case Mp3ObjectType::APE_TAG: return "Ape";
+		case Mp3ObjectType::VBRI_FRAME: return "VBRI";
+		case Mp3ObjectType::XING_FRAME: return "Xing";
+		case Mp3ObjectType::UNKNOWN_DATA: return "Unknown";
 		default : break;
 	}
 	assert(0);
