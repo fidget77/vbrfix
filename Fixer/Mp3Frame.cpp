@@ -23,36 +23,50 @@
 #include "FileBuffer.h"
 #include "Mp3Header.h"
 #include "FeedBackInterface.h"
+#include "ReadSettings.h"
 #include "XingFrame.h"
+#include "VbriFrame.h"
 #include <cassert>
 
-Mp3Frame * Mp3Frame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack)
+Mp3Frame * Mp3Frame::Check(CheckParameters & rParams)
 {
-	if(mp3FileBuffer.CanRead(Mp3Header::HEADER_SIZE_IN_BYTES))
+	if(rParams.m_mp3FileBuffer.CanRead(Mp3Header::HEADER_SIZE_IN_BYTES))
 	{
 		assert(sizeof(unsigned long) >= Mp3Header::HEADER_SIZE_IN_BYTES); // so we can store the header
 
-		unsigned long uHeader = mp3FileBuffer.GetFromBigEndianToNative();
+		unsigned long uHeader = rParams.m_mp3FileBuffer.GetFromBigEndianToNative();
 		Mp3Header testMp3Header(uHeader);
 
 		if(testMp3Header.IsValid())
 		{
 			if(testMp3Header.IsFreeBitrate())
 			{
-				throw "Frame uses free bitrate, not supported";
+				if(!rParams.m_readSettings.getTreatFreeFormatFramesAsUnknownData())
+				{
+					throw "Frame uses free bitrate, not supported";
+				}
+				else
+				{
+					return NULL;
+				}
 			}
 			else
 			{
-				if(mp3FileBuffer.CanRead( testMp3Header.GetFrameSize()))
+				if(rParams.m_mp3FileBuffer.CanRead( testMp3Header.GetFrameSize()))
 				{
 					// what type of frame is it
-					Mp3Frame * pFrame = XingFrame::Check(mp3FileBuffer, feedBack);
-					if(!pFrame) pFrame = new Mp3Frame(mp3FileBuffer.position(), testMp3Header);
+					Mp3Frame * pFrame = NULL;
+					pFrame = XingFrame::Check(rParams);
+					pFrame = VbriFrame::Check(rParams);
+					if(!pFrame)
+					{
+						pFrame = new Mp3Frame(rParams.m_mp3FileBuffer.position(), testMp3Header);
+					}
 					return pFrame;
 				}
 				else
 				{
-					feedBack.addLogMessage( Log::LOG_WARNING, "A Frame Runs off the end of the file, treating as unknown data");
+					rParams.m_feedBack.addLogMessage( Log::LOG_WARNING, "A Frame Runs off the end of the file, treating as unknown data");
 				}
 			}
 		}

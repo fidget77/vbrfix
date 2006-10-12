@@ -26,7 +26,7 @@
 #include <memory>
 #include "Mp3Header.h"
 
-class FileBuffer; class FeedBackInterface; class Mp3Header;
+class Mp3Header;
 
 class Mp3Frame : public Mp3Object
 {
@@ -35,7 +35,7 @@ class Mp3Frame : public Mp3Object
 		Mp3Frame(const Mp3Header &header);
 		virtual ~Mp3Frame();
 
-		static Mp3Frame* Check(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack);
+		static Mp3Frame* Check(CheckParameters & rParams);
 
 		virtual unsigned long size() const;
 
