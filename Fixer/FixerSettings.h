@@ -26,11 +26,12 @@
 #include <vector>
 #include <set>
 #include "Mp3FileObject.h"
+#include "ReadSettings.h"
 
 // TODO Make it so we have a Setting Class and Settings returns a list of settings
 // with descriptions of there ranges so the gui can generate from the options.
 
-class FixerSettings
+class FixerSettings : public ReadSettings
 {
 	public:
 		FixerSettings();

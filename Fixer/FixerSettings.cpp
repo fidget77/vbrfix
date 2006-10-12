@@ -22,7 +22,8 @@
 #include "FixerSettings.h"
 
 FixerSettings::FixerSettings( )
-	: m_AlwaysSkip(false)
+	: ReadSettings()
+	, m_AlwaysSkip(false)
 	, m_MinPercentUnderstood(99)
 	, m_bLogDetail(true)
 	, m_LameInfoOption(LAME_KEEP)
@@ -30,6 +31,7 @@ FixerSettings::FixerSettings( )
 	, m_XingFrameCrcOption(CRC_REMOVE)
 {
 	m_RemoveTypes.insert(Mp3ObjectType::XING_FRAME);
+	m_RemoveTypes.insert(Mp3ObjectType::VBRI_FRAME);
 }
 
 void FixerSettings::Defaults( )
