@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>635</width>
-    <height>491</height>
+    <width>662</width>
+    <height>492</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -98,6 +98,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="treatFreeFormatAsUnkown" >
+          <property name="text" >
+           <string>Treat FreeFormat Frames as Unkown Data (only do this if vbrfix wrongly reports a mp3 as free bitrate)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" >
           <property name="margin" >
            <number>0</number>
@@ -118,6 +125,20 @@
               <number>6</number>
              </property>
              <item>
+              <widget class="QCheckBox" name="removeXingTags" >
+               <property name="text" >
+                <string>Xing Tags</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="removeVbriTags" >
+               <property name="text" >
+                <string>VBRI Tags</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QCheckBox" name="removeId3v1Tags" >
                <property name="text" >
                 <string>ID3v1 Tags</string>
@@ -128,6 +149,13 @@
               <widget class="QCheckBox" name="removeId3v2Tags" >
                <property name="text" >
                 <string>ID3v2 Tags</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="removeApeTags" >
+               <property name="text" >
+                <string>APE Tags</string>
                </property>
               </widget>
              </item>
