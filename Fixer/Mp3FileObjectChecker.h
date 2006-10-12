@@ -22,12 +22,12 @@
 #ifndef MP3FILEOBJECTCHECKER_H
 #define MP3FILEOBJECTCHECKER_H
 
-class Mp3Object; class FileBuffer; class FeedBackInterface;
+class Mp3Object; class FileBuffer; class FeedBackInterface; class CheckParameters;
 
 class Mp3ObjectCheckerInterface
 {
 	public:
-		virtual Mp3Object* Check(FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack) const = 0;
+		virtual Mp3Object* Check(CheckParameters &rParams) const = 0;
 		virtual ~Mp3ObjectCheckerInterface(){}
 };
 
@@ -35,9 +35,9 @@ template < typename T_Mp3ObjectType>
 class Mp3ObjectChecker : public Mp3ObjectCheckerInterface
 {
 	public:
-		virtual Mp3Object* Check(FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack) const
+		virtual Mp3Object* Check(CheckParameters &rParams) const
 		{
-			return T_Mp3ObjectType::Check(mp3FileBuffer, feedBack);
+			return T_Mp3ObjectType::Check(rParams);
 		}
 };
 
