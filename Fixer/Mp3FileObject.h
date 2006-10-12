@@ -25,8 +25,6 @@
 #include <iosfwd>
 #include <set>
 
-class FileBuffer;
-
 class Mp3ObjectType
 {
 	public:
@@ -35,6 +33,7 @@ class Mp3ObjectType
 			UNKNOWN_DATA,
 			FRAME,
 			XING_FRAME,
+			VBRI_FRAME,
 			ID3V1_TAG,
 			ID3V2_TAG,
 			LYRICS_TAG,
@@ -62,6 +61,19 @@ class Mp3ObjectType
 		
 	private:
 		ObjectId m_Type;
+};
+
+class FeedBackInterface; class FileBuffer; class ReadSettings;
+
+class CheckParameters
+{
+	public:
+		CheckParameters(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack, const ReadSettings & readSettings)
+			: m_mp3FileBuffer(mp3FileBuffer), m_feedBack(feedBack), m_readSettings(readSettings) {}
+		
+		const FileBuffer & m_mp3FileBuffer;
+		FeedBackInterface & m_feedBack;
+		const ReadSettings & m_readSettings;
 };
 
 class Mp3Object

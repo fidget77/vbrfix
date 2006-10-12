@@ -89,7 +89,7 @@ Mp3ObjectType::Mp3ObjectType( ObjectId type )
 
 bool Mp3ObjectType::IsTypeOfFrame( ) const
 {
-	return (m_Type == FRAME || m_Type == XING_FRAME);
+	return (m_Type == FRAME || m_Type == XING_FRAME || m_Type == VBRI_FRAME);
 }
 
 bool Mp3ObjectType::IsTypeOfTag( ) const
@@ -133,6 +133,10 @@ const Mp3ObjectType::Set & Mp3ObjectType::GetTypes( )
 		types.insert(ID3V1_TAG);
 		types.insert(ID3V2_TAG);
 		types.insert(UNKNOWN_DATA);
+		types.insert(VBRI_FRAME);
+		types.insert(XING_FRAME);
+		types.insert(LYRICS_TAG);
+		types.insert(APE_TAG);
 	}
 	return types;
 }
