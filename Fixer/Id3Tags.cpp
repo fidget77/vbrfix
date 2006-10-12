@@ -34,8 +34,10 @@ Id3v1Tag::~Id3v1Tag()
 {
 }
 
-Id3v1Tag * Id3v1Tag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack)
+Id3v1Tag * Id3v1Tag::Check(CheckParameters & rParams)
 {
+	const FileBuffer& mp3FileBuffer(rParams.m_mp3FileBuffer);
+	
 	const std::string sTagIdentifier = "TAG";
 	if(mp3FileBuffer.CanRead(sTagIdentifier.size()))
 	{
@@ -43,20 +45,22 @@ Id3v1Tag * Id3v1Tag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface 
 		{
 			if(mp3FileBuffer.CanRead( ID3V1_TAG_SIZE ))
 			{
-				feedBack.addLogMessage(Log::LOG_INFO, "Found Id3v1 Tag");
+				rParams.m_feedBack.addLogMessage(Log::LOG_INFO, "Found Id3v1 Tag");
 				return new Id3v1Tag(mp3FileBuffer.position());
 			}
 			else
 			{
-				feedBack.addLogMessage(Log::LOG_WARNING, "Found an Id3v1 Tag over the end of the file, treating as unknown data");
+				rParams.m_feedBack.addLogMessage(Log::LOG_WARNING, "Found an Id3v1 Tag over the end of the file, treating as unknown data");
 			}
 		}
 	}
 	return NULL;
 }
 
-Id3v2Tag * Id3v2Tag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack)
+Id3v2Tag * Id3v2Tag::Check(CheckParameters & rParams)
 {
+	const FileBuffer& mp3FileBuffer(rParams.m_mp3FileBuffer);
+	
 	const std::string sTagIdentifier = "ID3";
 	const unsigned long headerBytesMustBeLessThan[] =
 	{
@@ -90,12 +94,12 @@ Id3v2Tag * Id3v2Tag::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface 
 					}
 					if(mp3FileBuffer.CanRead( id3Size ))
 					{
-						feedBack.addLogMessage(Log::LOG_INFO, "Found Id3v2 Tag");
+						rParams.m_feedBack.addLogMessage(Log::LOG_INFO, "Found Id3v2 Tag");
 						return new Id3v2Tag(mp3FileBuffer.position(), id3Size);
 					}
 					else
 					{
-						feedBack.addLogMessage(Log::LOG_WARNING, "Found an Id3v2 Tag over the end of the file, treating as unknown data");
+						rParams.m_feedBack.addLogMessage(Log::LOG_WARNING, "Found an Id3v2 Tag over the end of the file, treating as unknown data");
 					}
 				}
 			}

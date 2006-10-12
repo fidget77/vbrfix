@@ -24,15 +24,13 @@
 
 #include "Mp3FileObject.h"
 
-class FileBuffer; class FeedBackInterface;
-
 class Id3v1Tag : public Mp3Object
 {
 	private:
 		enum {ID3V1_TAG_SIZE = 128};
 	public:
 		virtual ~Id3v1Tag();
-		static Id3v1Tag* Check(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack);
+		static Id3v1Tag* Check(CheckParameters & rParams);
 
 		virtual unsigned long size() const {return ID3V1_TAG_SIZE;}
 		virtual Mp3ObjectType GetObjectType() const {return Mp3ObjectType(Mp3ObjectType::ID3V1_TAG);}
@@ -45,7 +43,7 @@ class Id3v2Tag : public Mp3Object
 {
 	public:
 		virtual ~Id3v2Tag();
-		static Id3v2Tag* Check(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack);
+		static Id3v2Tag* Check(CheckParameters & rParams);
 
 		virtual unsigned long size() const;
 		virtual Mp3ObjectType GetObjectType() const {return Mp3ObjectType(Mp3ObjectType::ID3V2_TAG);}
