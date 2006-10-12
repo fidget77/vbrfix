@@ -112,14 +112,18 @@ namespace
 		}
 		else
 		{
-			const bool presentInSet = settings.value("settings/" + desc).toBool();
-			if(presentInSet)
+			QString key = "settings/" + desc;
+			if(settings.contains(key))
 			{
-				set.insert(setItem);
-			}
-			else
-			{
-				set.erase(setItem);
+				const bool presentInSet = settings.value("settings/" + desc).toBool();
+				if(presentInSet)
+				{
+					set.insert(setItem);
+				}
+				else
+				{
+					set.erase(setItem);
+				}
 			}
 		}
 	} 
@@ -170,11 +174,15 @@ void Options::SaveLoad(bool bSave)
 	SaveLoadHelper<bool >(bSave, *settings, m_bSkipNonVbr, "Skip Non VBR");
 	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");	
 	SaveLoadHelper<bool >(bSave, *settings, m_bKeepSuffixIfNotSpecified, "KeepSuffixIfNotSpecified");
+	SaveLoadHelper<bool >(bSave, *settings, m_bTreatFreeFormatFramesAsUnknownData, "TreatFreeFormatFramesAsUnknown");
 
 	// remove types
 	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::ID3V1_TAG), "RemoveId3v1"); 
 	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::ID3V2_TAG), "RemoveId3v2");
 	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::UNKNOWN_DATA), "RemoveUnknown");
+	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::XING_FRAME), "RemoveXingTags");
+	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::VBRI_FRAME), "RemoveVbriTags");
+	SaveLoadInSetHelper< Mp3ObjectType >(bSave, *settings, m_RemoveTypes, Mp3ObjectType(Mp3ObjectType::APE_TAG), "RemoveApeTags");
 }
 
 void Options::setKeepSuffixIfNotSpecified( bool bKeep )
