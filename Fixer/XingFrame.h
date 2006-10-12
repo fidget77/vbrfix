@@ -40,7 +40,7 @@ class XingFrame : public Mp3Frame
 
 		virtual Mp3ObjectType GetObjectType() const {return Mp3ObjectType(Mp3ObjectType::XING_FRAME);}
 
-		static XingFrame * Check(const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack);
+		static XingFrame * Check(CheckParameters & rParams);
 
 		virtual bool HasLameInfo() const;
 

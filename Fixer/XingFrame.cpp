@@ -248,8 +248,10 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 	m_StreamSize = iNewFileSize;
 }
 
-XingFrame * XingFrame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterface & feedBack )
+XingFrame * XingFrame::Check(CheckParameters & rParams)
 {
+	const FileBuffer& mp3FileBuffer(rParams.m_mp3FileBuffer);
+	
 	// must be called from Mp3Frame::Check() or the Mp3Header might not have been verified and things like that`
 	Mp3Header header(mp3FileBuffer.GetFromBigEndianToNative());
 	const int iXingHeaderPos = GetXingHeaderOffset(header);
@@ -281,7 +283,7 @@ XingFrame * XingFrame::Check( const FileBuffer & mp3FileBuffer, FeedBackInterfac
 
 		std::string sMsg = "Found Xing Header Frame";
 		if(bContainsLameInfo) sMsg += " with LAME info";
-		feedBack.addLogMessage( Log::LOG_INFO, sMsg);
+		rParams.m_feedBack.addLogMessage( Log::LOG_INFO, sMsg);
 		
 		return pNewFrame;
 	}
