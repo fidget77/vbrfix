@@ -93,7 +93,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		// Process the original mp3
 		FileBuffer inFile(sInFileName);
 		m_ProgressDetails.SetState(FixState::READING);
-		Mp3Reader mp3Reader(inFile, m_rFeedBackInterface, m_ProgressDetails);
+		Mp3Reader mp3Reader(inFile, m_rFeedBackInterface, m_ProgressDetails, m_rFixerSettings);
 		mp3Reader.ReadMp3();
 
 		m_rFeedBackInterface.addLogMessage(Log::LOG_INFO, "Finished Reading Mp3 Structure");
@@ -193,26 +193,6 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			if(pOriginalFrame)
 			{
 				xingFrame->SetQuality( pOriginalFrame->GetQuality());
-				if(xingFrame->GetMp3Header().IsProtectedByCrc())
-				{
-					bool bRemoveCrc = false;
-					switch(m_rFixerSettings.GetXingFrameCrcOption())
-					{
-						case FixerSettings::CRC_REMOVE: 
-							bRemoveCrc = true; 
-							break;
-						case FixerSettings::CRC_KEEP_IF_CAN:
-							bRemoveCrc = !XingFrame::IsCrcUpdateSupported(xingFrame->GetMp3Header());
-							break;
-						case FixerSettings::CRC_KEEP: 
-							break;
-					}
-
-					if(bRemoveCrc)
-					{
-						xingFrame->GetMp3Header().RemoveCrcProtection();
-					}
-				}
 				if(m_rFixerSettings.KeepLameInfo())
 				{
 					xingFrame->SetLameData( pOriginalFrame->GetLameData() );
@@ -222,6 +202,28 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 					}
 				}
 			}
+			
+			if(xingFrame->GetMp3Header().IsProtectedByCrc())
+			{
+				bool bRemoveCrc = false;
+				switch(m_rFixerSettings.GetXingFrameCrcOption())
+				{
+					case FixerSettings::CRC_REMOVE: 
+						bRemoveCrc = true; 
+						break;
+					case FixerSettings::CRC_KEEP_IF_CAN:
+						bRemoveCrc = !XingFrame::IsCrcUpdateSupported(xingFrame->GetMp3Header());
+						break;
+					case FixerSettings::CRC_KEEP: 
+						break;
+				}
+
+				if(bRemoveCrc)
+				{
+					xingFrame->GetMp3Header().RemoveCrcProtection();
+				}
+			}
+			
 			xingFrame->Setup(Mp3Objects);
 		}
 
@@ -311,6 +313,11 @@ bool VbrFixer::ShouldSkipMp3( const Mp3Reader::ConstMp3ObjectList & /*frames*/ )
 		m_rFeedBackInterface.addLogMessage( Log::LOG_INFO, "Skipping as the file is not vbr");
 		return true;
 	}
+	if(m_ProgressDetails.GetFrameCount() == 0)
+	{
+		m_rFeedBackInterface.addLogMessage( Log::LOG_ERROR, "The mp3 has no identified frames ; skipping");
+		return true;
+	}
 	return false;
 }
 
@@ -326,7 +333,7 @@ FixState::State VbrFixer::ProgressDetails::GetState( ) const
 
 std::string VbrFixer::GetFixerVersion( )
 {
-	return "1(beta) E";
+	return "1(beta) F";
 }
 
 
