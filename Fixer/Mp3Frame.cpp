@@ -55,9 +55,8 @@ Mp3Frame * Mp3Frame::Check(CheckParameters & rParams)
 				if(rParams.m_mp3FileBuffer.CanRead( testMp3Header.GetFrameSize()))
 				{
 					// what type of frame is it
-					Mp3Frame * pFrame = NULL;
-					pFrame = XingFrame::Check(rParams);
-					pFrame = VbriFrame::Check(rParams);
+					Mp3Frame * pFrame = XingFrame::Check(rParams);
+					if(!pFrame) pFrame = VbriFrame::Check(rParams);
 					if(!pFrame)
 					{
 						pFrame = new Mp3Frame(rParams.m_mp3FileBuffer.position(), testMp3Header);
