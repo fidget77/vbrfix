@@ -41,7 +41,7 @@ ApeTag * ApeTag::Check(CheckParameters & rParams)
 {
 	const FileBuffer& mp3FileBuffer(rParams.m_mp3FileBuffer);
 	
-	#warning "TODO introduce a iterator wrapper around the FileBuffer object to improve the code here"
+	// TODO introduce a iterator wrapper around the FileBuffer object to improve the code here
 	const std::string sStartIdentifier = "APETAGEX";
 	
 	const unsigned long versionDataByteNo = 4, sizeDataByteNo = 4, itemCountDataByteNo = 4, flagsDataByteNo = 4;
