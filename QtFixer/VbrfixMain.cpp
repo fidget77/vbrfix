@@ -363,7 +363,7 @@ void VbrfixMain::finishedFixing()
 				{
 					//deal with it. on windows need to delete the file first if exists
 					// set deleteTempFile = false if we do
-					#warning "TODO readonly files"
+					// TODO readonly files
 					QFile::remove(destination);
 
 				}
