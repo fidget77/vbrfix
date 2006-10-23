@@ -31,6 +31,7 @@
 #include "ApeTag.h"
 #include <sstream>
 #include <cassert>
+#include <algorithm>
 
 namespace
 {
@@ -60,8 +61,8 @@ Mp3Reader::Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, Re
 
 Mp3Reader::~Mp3Reader()
 {
-	for_each(m_Mp3Objects.begin(), m_Mp3Objects.end(), SDelete());
-	for_each(m_ObjectCheckers.begin(), m_ObjectCheckers.end(), SDelete());
+	std::for_each(m_Mp3Objects.begin(), m_Mp3Objects.end(), SDelete());
+	std::for_each(m_ObjectCheckers.begin(), m_ObjectCheckers.end(), SDelete());
 }
 
 void Mp3Reader::CheckForUnknownData()
