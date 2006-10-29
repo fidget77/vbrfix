@@ -21,6 +21,7 @@
 
 #include "Mp3FileObject.h"
 #include "FileBuffer.h"
+#include "GenHelpers.h"
 #include <algorithm>
 #include <functional>
 #include <cassert>
@@ -33,10 +34,11 @@ void Mp3Object::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 	{
 		const unsigned long iObjectSize = size();
 		const unsigned long iObjectStartPos = getOldFilePosition();
-		unsigned char* buffer[iObjectSize];
+		unsigned char* buffer = new unsigned char[iObjectSize];
+		ArrayDeleter<unsigned char> cleanUpArray(buffer); // will delete the array when it goes out of scope
 		originalFile.setPosition(iObjectStartPos);
-		originalFile.readIntoBuffer(reinterpret_cast<unsigned char*>(&buffer), iObjectSize);
-		rOutFile.write(reinterpret_cast<char*>(&buffer), iObjectSize);
+		originalFile.readIntoBuffer(buffer, iObjectSize);
+		rOutFile.write(reinterpret_cast<char*>(buffer), iObjectSize);
 	}
 }
 

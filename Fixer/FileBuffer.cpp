@@ -20,9 +20,10 @@
 ///////////////////////////////////////////////////////////////////////////////////*/
 
 #include "FileBuffer.h"
+#include "EndianHelper.h"
+#include "GenHelpers.h"
 #include <iterator>
 #include <cmath>
-#include "EndianHelper.h"
 #include <cassert>
 
 FileBuffer::FileBuffer(const std::string& fileName)
@@ -54,8 +55,9 @@ unsigned char FileBuffer::operator [ ]( off_type i ) const
 	//if this is after our buffer then read more data from the stream
 	if(i >= iCurrentBufferSize)
 	{
-		unsigned char buffer[i - iCurrentBufferSize + 1];
-		m_Stream->read(reinterpret_cast<char*>(&buffer), sizeof(buffer));
+		unsigned char* buffer = new unsigned char[i - iCurrentBufferSize + 1];
+		ArrayDeleter<unsigned char> cleanUpArray(buffer); // will delete the array when it goes out of scope
+		m_Stream->read(reinterpret_cast<char*>(buffer), sizeof(buffer));
 		m_InternalBuffer.insert(m_InternalBuffer.end(), buffer, buffer + sizeof(buffer));
 		if(m_Stream->fail()) throw ("File Read error");
 	}

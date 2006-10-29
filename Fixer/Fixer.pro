@@ -21,7 +21,8 @@ HEADERS += BitReader.h \
            CrcCalc.h \
            ApeTag.h \
            VbriFrame.h \
-           ReadSettings.h 
+           ReadSettings.h \
+           GenHelpers.h 
 SOURCES += FileBuffer.cpp \
            Mp3Frame.cpp \
            Mp3Header.cpp \
