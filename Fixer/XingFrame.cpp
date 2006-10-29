@@ -233,8 +233,12 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 	// Generate TOC
 	for(int iPercent = 0; iPercent < 100; ++iPercent)
 	{
-		int iFrame = static_cast<int>((iPercent / 100.0) * framePositions.size());
-		m_Toc.push_back(((256 * framePositions[iFrame]) / iNewFileSize));
+		const int iFrame = static_cast<int>((iPercent / 100.0) * framePositions.size());
+		const double dValue = 256 * (framePositions[iFrame] / (1.0 * iNewFileSize));
+		int iBytePercent = int(dValue + 0.5);
+		if(iBytePercent > 255) iBytePercent = 255;
+		assert(iBytePercent >= 0);
+		m_Toc.push_back(iBytePercent);
 	}
 	assert(m_Toc.size() == 100);
 
