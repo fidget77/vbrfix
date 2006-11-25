@@ -55,10 +55,11 @@ unsigned char FileBuffer::operator [ ]( off_type i ) const
 	//if this is after our buffer then read more data from the stream
 	if(i >= iCurrentBufferSize)
 	{
-		unsigned char* buffer = new unsigned char[i - iCurrentBufferSize + 1];
+		const int size = i - iCurrentBufferSize + 1;
+		unsigned char* buffer = new unsigned char[size];
 		ArrayDeleter<unsigned char> cleanUpArray(buffer); // will delete the array when it goes out of scope
-		m_Stream->read(reinterpret_cast<char*>(buffer), sizeof(buffer));
-		m_InternalBuffer.insert(m_InternalBuffer.end(), buffer, buffer + sizeof(buffer));
+		m_Stream->read(reinterpret_cast<char*>(buffer), size);
+		m_InternalBuffer.insert(m_InternalBuffer.end(), buffer, buffer + size);
 		if(m_Stream->fail()) throw ("File Read error");
 	}
 	return m_InternalBuffer[i];
