@@ -402,6 +402,7 @@ void VbrfixMain::finishedFixing()
 VbrfixMain::~VbrfixMain()
 {
 	m_Options.Save();
+	if(m_pFixThread) delete m_pFixThread;
 }
 
 void VbrfixMain::on_actionAbout_triggered()
