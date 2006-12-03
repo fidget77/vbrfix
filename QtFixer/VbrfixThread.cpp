@@ -23,12 +23,25 @@
 #include "VbrfixThread.h"
 #include "VbrFixer.h"
 #include <QtCore>
+#include <cassert>
+
+namespace
+{
+	bool RequiresUnicode(const QString& string)
+	{
+		for(int i = 0; i < string.size(); ++i)
+		{
+			if(string[i].toAscii() == 0) return true;
+		}
+		return false;
+	}
+}
 
 VbrfixThread::VbrfixThread(const FixerSettings & fixSettings, const QString &inFile)
 	: QThread()
 	, m_FixerSettings(fixSettings)
 	, m_inFile(inFile)
-	, m_outFile(QDir::tempPath() +  QDir::separator() + "vbrfix.tmp")
+	, m_outFile(QDir::tempPath() + QDir::separator() + "vbrfix.tmp")
 	, m_UserHasCancelled(false)
 	, m_Fixer(new VbrFixer(*this, m_FixerSettings))
 {
@@ -55,8 +68,57 @@ void VbrfixThread::run()
 // main fix funciton
 void VbrfixThread::fix()
 {
-	update();
-	m_Fixer->Fix(m_inFile.toStdString(), m_outFile.toStdString());
+	try
+	{
+		update();
+		
+		// Workaroun to allow for unicode file names 
+		// standard c++ doesn't support unicode filenames and we don't want to make the Fixer less portable 
+		// So just copy the file to what we expect to be a char(not wchar) name 
+		// will not work if the temp folder has wchar chararcters
+		
+		const QString unicodeTmpFile = QDir::tempPath() + QDir::separator() + "vbrfix-uc.tmp";
+		QString inputFile = m_inFile;
+		if(RequiresUnicode(inputFile))
+		{
+			addLogMessage( Log::LogItem(Log::LOG_INFO, "Using unicode filename workaround"));
+			inputFile = unicodeTmpFile;
+			bool result = QFile::copy(m_inFile, inputFile);
+			if(!result)
+			{
+				throw "File copy failed";
+			}
+		}
+		
+		if(RequiresUnicode(inputFile) || RequiresUnicode(m_outFile))
+		{
+			throw "Error with temporary files";
+		}
+		
+		m_Fixer->Fix(inputFile.toStdString(), m_outFile.toStdString());
+		
+		if(unicodeTmpFile == inputFile)
+		{
+			if(m_inFile == unicodeTmpFile) 
+			{
+				assert(false);
+				throw "Error with temp file";
+			}
+			// remove the temp file
+			QFile::remove(unicodeTmpFile);
+		}
+	}
+	catch(const char* pszDetails)
+	{
+		addLogMessage( Log::LogItem(Log::LOG_ERROR, pszDetails));
+		m_FixProgressDetails.SetState(FixState::ERROR);
+	}
+	catch(...)
+	{
+		addLogMessage( Log::LogItem(Log::LOG_ERROR, "Unknown Error"));
+		m_FixProgressDetails.SetState(FixState::ERROR);
+	}
+	
 	SyncProgresDetails();
 	
 	postEventToGui(FINISHEDFIX);
