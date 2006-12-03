@@ -24,6 +24,7 @@ RESOURCES = res.qrc
 POST_TARGETDEPS += ../Fixer/lib/libFixer.a
 LIBS += ../Fixer/lib/libFixer.a
 INCLUDEPATH += ../Fixer
+DEFINES += QT_NO_CAST_TO_ASCII
 TARGET = VbrfixGui
 CONFIG += warn_on \
 qt \
