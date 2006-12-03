@@ -332,10 +332,6 @@ FixState::State VbrFixer::ProgressDetails::GetState( ) const
 	return m_eState;
 }
 
-std::string VbrFixer::GetFixerVersion( )
-{
-	return "1(beta) G";
-}
 
 
 

@@ -37,7 +37,8 @@ SOURCES += FileBuffer.cpp \
            CrcCalc.cpp \
            ApeTag.cpp \
            VbriFrame.cpp \
-           ReadSettings.cpp 
+           ReadSettings.cpp \
+           Version.cpp 
 CONFIG += warn_on \
 staticlib \
 exceptions \
