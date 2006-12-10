@@ -1,7 +1,5 @@
 <ui version="4.0" >
  <author>William Pye</author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>VbrfixMain</class>
  <widget class="QMainWindow" name="VbrfixMain" >
   <property name="modal" stdset="0" >
@@ -48,7 +46,13 @@
         <property name="toolTip" >
          <string>List of mp3s</string>
         </property>
+        <property name="alternatingRowColors" >
+         <bool>true</bool>
+        </property>
         <property name="rootIsDecorated" >
+         <bool>false</bool>
+        </property>
+        <property name="allColumnsShowFocus" >
          <bool>false</bool>
         </property>
        </widget>
@@ -83,6 +87,9 @@
         </property>
         <property name="textVisible" >
          <bool>true</bool>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="invertedAppearance" >
          <bool>false</bool>
@@ -119,7 +126,7 @@
      <x>0</x>
      <y>0</y>
      <width>711</width>
-     <height>26</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -185,7 +192,6 @@
    </property>
   </action>
  </widget>
- <pixmapfunction></pixmapfunction>
  <resources>
   <include location="res.qrc" />
  </resources>
