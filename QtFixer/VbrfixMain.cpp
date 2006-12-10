@@ -40,7 +40,8 @@ VbrfixMain::VbrfixMain(QWidget *parent)
 	setupUi(this);
 	
 	setWindowTitle(windowTitle() + " version " + VbrfixAbout::GetFullVersion().c_str());
-	
+	// TODO rework the column code 
+	fixList->setColumnCount(7);
 	QTreeWidgetItem* pHeaderItem = fixList->headerItem();
 	pHeaderItem->setText(C_Status, tr("Status"));
 	pHeaderItem->setText(C_File, tr("File"));
@@ -49,7 +50,7 @@ VbrfixMain::VbrfixMain(QWidget *parent)
 	pHeaderItem->setText(C_Tags, tr("Tags"));
 	pHeaderItem->setText(C_PercentUnderstood, tr("% Understood"));
 	pHeaderItem->setText(C_Frames, tr("Frames"));
-
+	
 	m_Options.Load();
 	updateButtons();
 }
@@ -239,7 +240,7 @@ void VbrfixMain::updateListItem(Mp3FileListItem* fixItem, bool firstTime)
 	{
 		if(firstTime)
 		{
-			for(int iCol = 0; iCol < fixList->headerItem()->columnCount(); ++iCol)
+			for(int iCol = 0; iCol < fixList->columnCount(); ++iCol)
 			{
 				fixItem->setText(iCol, tr("-"));
 			}
