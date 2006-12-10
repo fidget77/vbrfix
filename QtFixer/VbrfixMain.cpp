@@ -116,7 +116,13 @@ void VbrfixMain::fixAnother()
 		bool bOK = connect(m_pFixThread, SIGNAL(guiEvent(int)), this, SLOT(threadGuiEvent(int)));
 		assert(bOK); // something has gone wrong with the gui
 		
+		// select the fixing item 
+		// + hack to get around a problem with horizontal scrolling moving back to the start 
+		const int oldHorzPos = fixList->horizontalScrollBar()->value();
 		fixList->setCurrentItem(fixItem);
+		fixList->horizontalScrollBar()->setValue(oldHorzPos);
+		
+		// start the thread 
 		m_pFixThread->start();
 		updateProgress();
 	}
