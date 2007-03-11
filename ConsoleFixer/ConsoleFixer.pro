@@ -16,3 +16,7 @@ CONFIG += warn_on \
 stl \
 console
 TEMPLATE = app
+
+mac:LIBS       +=-dead_strip
+mac:CONFIG     -= app_bundle
+
