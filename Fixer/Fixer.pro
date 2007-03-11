@@ -46,3 +46,6 @@ stl
 TEMPLATE = lib
 DESTDIR = lib
 TARGET = Fixer
+
+mac:LIBS +=-dead_strip
+
