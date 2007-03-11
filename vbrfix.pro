@@ -11,3 +11,5 @@ TEMPLATE = subdirs
 CONFIG += warn_on \
 qt \
 thread
+
+mac:LIBS +=-dead_strip
