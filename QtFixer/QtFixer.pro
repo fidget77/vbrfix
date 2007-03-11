@@ -32,3 +32,6 @@ thread \
 exceptions \
 stl
 TEMPLATE = app
+
+mac:LIBS       +=-dead_strip
+
