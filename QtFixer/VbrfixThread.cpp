@@ -31,7 +31,7 @@ namespace
 	{
 		for(int i = 0; i < string.size(); ++i)
 		{
-			if(string[i].toAscii() == 0) return true;
+			if(string[i].unicode() > 127) return true;
 		}
 		return false;
 	}
