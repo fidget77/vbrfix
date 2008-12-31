@@ -215,16 +215,16 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 	
 	typedef std::deque<unsigned long> FramePositions;
 	FramePositions framePositions;
-	unsigned long iNewFileSize = 0;
+	unsigned long iNewStreamSize = 0;
 	
 	// count frames
 	for(Mp3ObjectList::const_iterator iter = finalObjectList.begin(); iter != finalObjectList.end(); ++iter)
 	{
 		if((*iter)->GetObjectType().IsTypeOfFrame())
 		{
-			framePositions.push_back(iNewFileSize);
+			framePositions.push_back(iNewStreamSize);
+			iNewStreamSize += (*iter)->size(); // only count size of frames, not tags
 		}
-		iNewFileSize += (*iter)->size();
 	}
 
 	m_Toc.clear();
@@ -234,7 +234,7 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 	for(int iPercent = 0; iPercent < 100; ++iPercent)
 	{
 		const int iFrame = static_cast<int>((iPercent / 100.0) * framePositions.size());
-		const double dValue = 256 * (framePositions[iFrame] / (1.0 * iNewFileSize));
+		const double dValue = 256 * (framePositions[iFrame] / (1.0 * iNewStreamSize));
 		int iBytePercent = int(dValue + 0.5);
 		if(iBytePercent > 255) iBytePercent = 255;
 		assert(iBytePercent >= 0);
@@ -249,7 +249,7 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 	m_FrameCount = framePositions.size() - 1; // - 1 as we don't include this Xing frame, just the music data frames
 
 	// Stream Size
-	m_StreamSize = iNewFileSize;
+	m_StreamSize = iNewStreamSize;
 }
 
 XingFrame * XingFrame::Check(CheckParameters & rParams)

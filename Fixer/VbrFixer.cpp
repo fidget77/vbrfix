@@ -232,11 +232,18 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 	
 		// write the objects to the new file
 		unsigned long iFileSizeTotal = 0;
+		unsigned long iStreamSize = 0;
 		int iObjectsWritten = 0; const int iTotalObjects = Mp3Objects.size();
 		for(Mp3Reader::ConstMp3ObjectList::const_iterator iter = Mp3Objects.begin(); iter != Mp3Objects.end(); ++iter)
 		{
 			(*iter)->writeToFile(inFile, outFile);
 			iFileSizeTotal += (*iter)->size();
+
+			if((*iter)->GetObjectType().IsTypeOfFrame())
+			{
+				iStreamSize += (*iter)->size(); // also count size of stream
+			}
+			
 			if(m_rFeedBackInterface.HasUserCancelled())
 			{
 				m_ProgressDetails.SetState(FixState::CANCELLED);
@@ -253,7 +260,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		}
 
 		ss.str("");
-		ss << "NewSize = " << iFileSizeTotal;
+		ss << "New File Size = " << iFileSizeTotal << ", Audio Stream Size = " << iStreamSize;
 		m_rFeedBackInterface.addLogMessage(Log::LOG_INFO, ss.str());
 		
 		outFile.close();
