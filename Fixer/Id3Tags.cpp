@@ -38,6 +38,7 @@ Id3v1Tag * Id3v1Tag::Check(CheckParameters & rParams)
 {
 	const FileBuffer& mp3FileBuffer(rParams.m_mp3FileBuffer);
 	
+	// TODO "TAG+"
 	const std::string sTagIdentifier = "TAG";
 	if(mp3FileBuffer.CanRead(sTagIdentifier.size()))
 	{
@@ -67,6 +68,8 @@ Id3v2Tag * Id3v2Tag::Check(CheckParameters & rParams)
 		sTagIdentifier[0] + 1, sTagIdentifier[1] + 1,  sTagIdentifier[2] + 1,
 		255, 255, 256 /* flags could be better*/, 128, 128, 128, 128
 	};
+
+	//TODO Check the TLEN time is correct
 	const unsigned int headerBytesMustBeLessThanSize = sizeof(headerBytesMustBeLessThan) / sizeof(unsigned long);
 	if(mp3FileBuffer.CanRead(sTagIdentifier.size() + headerBytesMustBeLessThanSize))
 	{

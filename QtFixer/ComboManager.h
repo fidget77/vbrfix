@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 
 template < typename _Data >
 class ComboManager

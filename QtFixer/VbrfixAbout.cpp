@@ -53,6 +53,9 @@ VbrfixAbout::VbrfixAbout(QWidget *parent)
 	BuildDate->setText(QString("%1 %2 %3").arg(day).arg(month.c_str()).arg(year));
 	FullVersion->setText(GetFullVersion().c_str());
 	FixerVersion->setText(VbrFixer::GetFixerVersion().c_str());
+	QFile licence(":/vbrfix/text/copying.text");
+	licence.open(QIODevice::ReadOnly);
+	licenceBrowser->setText(licence.readAll());
 }
 
 

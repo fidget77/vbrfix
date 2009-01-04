@@ -22,7 +22,7 @@ SOURCES += Main.cpp \
            VbrfixAbout.cpp 
 RESOURCES = res.qrc
 POST_TARGETDEPS += ../Fixer/lib/libFixer.a
-LIBS += ../Fixer/lib/libFixer.a
+LIBS += -L../Fixer/lib/ -lFixer
 INCLUDEPATH += ../Fixer
 DEFINES += QT_NO_CAST_TO_ASCII
 TARGET = VbrfixGui

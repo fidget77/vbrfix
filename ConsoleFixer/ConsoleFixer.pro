@@ -9,7 +9,7 @@ SOURCES += ConsoleFixer.cpp \
            main.cpp \
            CommandReader.cpp 
 POST_TARGETDEPS += ../Fixer/lib/libFixer.a
-LIBS += ../Fixer/lib/libFixer.a
+LIBS += -L../Fixer/lib/ -lFixer
 INCLUDEPATH += ../Fixer
 TARGET = VbrfixConsole
 CONFIG += warn_on \
