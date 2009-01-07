@@ -27,6 +27,7 @@
 #include <memory>
 #include <deque>
 #include <string>
+#include <vector>
 
 class FileBuffer
 {
@@ -41,6 +42,8 @@ class FileBuffer
 
 		unsigned long GetFromBigEndianToNative(off_type iStartingfromByte = 0) const;
 		unsigned long GetFromLitleEndianToNative( off_type iStartingfromByte = 0) const;
+
+		void getData(std::vector<unsigned char>& dest, off_type iStartingfromByte = 0) const;
 
 		bool CanRead(off_type iCount) const;
 

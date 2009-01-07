@@ -126,6 +126,14 @@ bool FileBuffer::DoesSay(const std::string& text, off_type iStartingfromByte) co
 	return true;
 }
 
+void FileBuffer::getData(std::vector<unsigned char>& dest, off_type iStartingfromByte) const
+{
+	for(off_type i = 0; i < dest.size(); ++i)
+	{
+		dest[i] = (*this)[i + iStartingfromByte];
+	}
+}
+
 unsigned long FileBuffer::GetFromBigEndianToNative( off_type iStartingfromByte ) const
 {
 	unsigned char buffer[4];

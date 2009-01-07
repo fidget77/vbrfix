@@ -25,6 +25,7 @@
 #include "EndianHelper.h"
 #include "FileBuffer.h"
 #include "FeedBackInterface.h"
+#include "FixerSettings.h"
 #include "CrcCalc.h"
 #include <cmath>
 #include <iostream>
@@ -41,7 +42,14 @@ namespace
 	const unsigned int HEADER_BYTES = 4;
 	const int INVALID_XING_OFFSET = -1;
 
+	const unsigned int TOC_SIZE = 100;
+
 	const std::string XingIdentifier = "Xing";
+
+	bool TocSimilar(const unsigned char& a, const unsigned char & b)
+	{
+		return ((std::max(a, b) - std::min(a, b)) < 3);
+	}
 
 	int GetXingHeaderOffset(Mp3Header header)
 	{
@@ -65,11 +73,11 @@ namespace
 	}
 	unsigned long GetXingDataSize(unsigned long uXingFlags)
 	{
-		unsigned long size = 8; // Xing(4) + Flags(4) sizes
-		if(uXingFlags & FRAMES_FLAG) size += 4;
-		if(uXingFlags & BYTES_FLAG) size += 4;
-		if(uXingFlags & TOC_FLAG) size += 100;
-		if(uXingFlags & VBR_SCALE_FLAG) size += 4;
+		unsigned long size = HEADER_BYTES + HEADER_BYTES; // Xing + Flags sizes
+		if(uXingFlags & FRAMES_FLAG) size += HEADER_BYTES;
+		if(uXingFlags & BYTES_FLAG) size += HEADER_BYTES;
+		if(uXingFlags & TOC_FLAG) size += TOC_SIZE;
+		if(uXingFlags & VBR_SCALE_FLAG) size += HEADER_BYTES;
 		return size;
 	}
 	unsigned long GetLameInfoPosition(int iXingHeaderPos, unsigned long uXingFlags)
@@ -119,7 +127,7 @@ void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 	AddAsBigEndian(buffer, m_Flags);
 	AddAsBigEndian(buffer, m_FrameCount);
 	AddAsBigEndian(buffer, m_StreamSize);
-	assert(100 == m_Toc.size());
+	assert(TOC_SIZE == m_Toc.size());
 	buffer.insert(buffer.end(), m_Toc.begin(), m_Toc.end());
 	
 	AddAsBigEndian(buffer, m_VbrScale);
@@ -199,8 +207,51 @@ XingFrame::XingFrame(const Mp3Header & header)
 	assert(header.IsValid());
 }
 
-void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
+void XingFrame::Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pOriginalFrame, const FixerSettings &rFixerSettings)
 {
+	// Xing Flags
+	m_Flags = FRAMES_FLAG | BYTES_FLAG | TOC_FLAG;
+	
+	if(pOriginalFrame)
+	{
+		if(pOriginalFrame->m_Flags & VBR_SCALE_FLAG) // only do scale if it existed previously
+		{
+			m_Flags |= VBR_SCALE_FLAG;
+			m_VbrScale = pOriginalFrame->m_VbrScale;
+		}
+
+		if(rFixerSettings.KeepLameInfo())
+		{
+			SetLameData( pOriginalFrame->GetLameData() );
+			if(rFixerSettings.recalculateLameTagHeaderCrc())
+			{
+				SetRecalculateLameTagCrc(true);
+			}
+		}
+	}
+	
+	if(GetMp3Header().IsProtectedByCrc())
+	{
+		bool bRemoveCrc = false;
+		switch(rFixerSettings.GetXingFrameCrcOption())
+		{
+			case FixerSettings::CRC_REMOVE: 
+				bRemoveCrc = true; 
+				break;
+			case FixerSettings::CRC_KEEP_IF_CAN:
+				bRemoveCrc = !IsCrcUpdateSupported(GetMp3Header());
+				break;
+			case FixerSettings::CRC_KEEP: 
+				break;
+		}
+
+		if(bRemoveCrc)
+		{
+			GetMp3Header().RemoveCrcProtection();
+		}
+	}
+	
+
 	unsigned int minSize = GetXingHeaderOffset(m_Header) + 120;
 	if(HasLameInfo())
 	{
@@ -228,28 +279,45 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList)
 	}
 
 	m_Toc.clear();
-	m_Toc.reserve(100);
+	m_Toc.reserve(TOC_SIZE);
 
 	// Generate TOC
-	for(int iPercent = 0; iPercent < 100; ++iPercent)
+	for(int iPercent = 0; iPercent < TOC_SIZE; ++iPercent)
 	{
-		const int iFrame = static_cast<int>((iPercent / 100.0) * framePositions.size());
+		const int iFrame = static_cast<int>((iPercent / double(TOC_SIZE)) * framePositions.size());
 		const double dValue = 256 * (framePositions[iFrame] / (1.0 * iNewStreamSize));
 		int iBytePercent = int(dValue + 0.5);
 		if(iBytePercent > 255) iBytePercent = 255;
 		assert(iBytePercent >= 0);
 		m_Toc.push_back(iBytePercent);
 	}
-	assert(m_Toc.size() == 100);
-
-	// Xing Flags
-	m_Flags = FRAMES_FLAG | BYTES_FLAG | TOC_FLAG | VBR_SCALE_FLAG;
+	assert(m_Toc.size() == TOC_SIZE);
 
 	// Frame Count
 	m_FrameCount = framePositions.size() - 1; // - 1 as we don't include this Xing frame, just the music data frames
 
 	// Stream Size
 	m_StreamSize = iNewStreamSize;
+}
+
+bool XingFrame::isOriginalCorrect(const XingFrame* originalFrame)
+{
+	bool differ = false;
+	differ |= (originalFrame->m_FrameCount != m_FrameCount);
+	differ |= (originalFrame->m_Flags != m_Flags);
+
+	// by real we mean excluding the Xing Frame
+	const unsigned long originalRealStreamSize = (originalFrame->m_StreamSize - originalFrame->size());
+	const unsigned long realStreamSize = (m_StreamSize - size());
+	differ |= (originalRealStreamSize != realStreamSize);
+	differ |= (originalFrame->m_VbrScale != m_VbrScale);
+	if(m_Toc.size() == originalFrame->m_Toc.size())
+	{
+		differ |= !std::equal(m_Toc.begin(), m_Toc.end(), originalFrame->m_Toc.begin(), TocSimilar);
+	}
+	else differ = true;
+
+	return !differ;
 }
 
 XingFrame * XingFrame::Check(CheckParameters & rParams)
@@ -265,6 +333,7 @@ XingFrame * XingFrame::Check(CheckParameters & rParams)
 		const unsigned long uLamePosition = GetLameInfoPosition(iXingHeaderPos, uXingFlags);
 		const bool bContainsLameInfo = mp3FileBuffer.DoesSay("LAME", uLamePosition);
 		XingFrame *pNewFrame = new XingFrame(mp3FileBuffer.position(), header);
+		pNewFrame->m_Flags = uXingFlags;
 		if(bContainsLameInfo)
 		{
 			const int LAME_LENGTH = (header.GetFrameSize() - uLamePosition);
@@ -275,14 +344,26 @@ XingFrame * XingFrame::Check(CheckParameters & rParams)
 			}
 			pNewFrame->SetLameData(lameInfo);
 		}
+		int iQualPos = iXingHeaderPos + XingIdentifier.size() + sizeof(uXingFlags);
+		if(uXingFlags & FRAMES_FLAG) 
+		{
+			pNewFrame->m_FrameCount = mp3FileBuffer.GetFromBigEndianToNative(iQualPos);
+			iQualPos += HEADER_BYTES;
+		}
+		if(uXingFlags & BYTES_FLAG)
+		{
+			pNewFrame->m_StreamSize = mp3FileBuffer.GetFromBigEndianToNative(iQualPos);
+			iQualPos += HEADER_BYTES;
+		}
+		if(uXingFlags & TOC_FLAG)
+		{
+			pNewFrame->m_Toc.resize(TOC_SIZE);
+			mp3FileBuffer.getData(pNewFrame->m_Toc, iQualPos);
+			iQualPos += TOC_SIZE;
+		}
 		if(uXingFlags & VBR_SCALE_FLAG)
 		{
-			int iQualPos = iXingHeaderPos + XingIdentifier.size() + 4; // +4 is the size of the flags
-			if(uXingFlags & FRAMES_FLAG) iQualPos += 4;
-			if(uXingFlags & BYTES_FLAG) iQualPos += 4;
-			if(uXingFlags & TOC_FLAG) iQualPos += 100;
-			int quality = mp3FileBuffer.GetFromBigEndianToNative( iQualPos );
-			pNewFrame->SetQuality(quality);
+			pNewFrame->m_VbrScale = mp3FileBuffer.GetFromBigEndianToNative( iQualPos );
 		}
 
 		std::string sMsg = "Found Xing Header Frame";

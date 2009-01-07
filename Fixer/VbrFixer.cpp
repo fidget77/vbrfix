@@ -142,7 +142,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		}
 	
 		// insert a vbr header object if needed before the 1st frame
-		XingFrame * xingFrame = NULL;
+		std::auto_ptr<XingFrame> xingFrame;
 		if(m_ProgressDetails.IsVbr())
 		{
 			Mp3Reader::ConstMp3ObjectList::iterator firstFrame = std::find_if(Mp3Objects.begin(), Mp3Objects.end(), IsOfMp3ObjectType(Mp3ObjectType::GetFrameTypes()));
@@ -150,8 +150,8 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			const Mp3Object* pMp3Object = *firstFrame;
 			assert(pMp3Object->GetObjectType().IsTypeOfFrame());
 			const Mp3Frame* pFirstFrame = static_cast<const Mp3Frame* >(pMp3Object);
-			xingFrame = new XingFrame(pFirstFrame->GetMp3Header());
-			Mp3Objects.insert(firstFrame, xingFrame);
+			xingFrame.reset(new XingFrame(pFirstFrame->GetMp3Header()));
+			Mp3Objects.insert(firstFrame, xingFrame.get());
 		}
 	
 		// TODO order the objects
@@ -172,7 +172,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 	
 		// Fill the Xing Frame once we know the file positions will not change again
 		// This must occur dicectly before writing the Mp3
-		if(xingFrame)
+		if(xingFrame.get())
 		{
 			const XingFrame * pOriginalFrame = NULL;
 			if(m_rFixerSettings.KeepLameInfo())
@@ -191,41 +191,17 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 					pOriginalFrame = static_cast<const XingFrame* >(*xingFrameIter);
 				}
 			}
-			if(pOriginalFrame)
+			
+			xingFrame->Setup(Mp3Objects, pOriginalFrame, m_rFixerSettings);
+			if(pOriginalFrame && m_rFixerSettings.skipIfXingTagLooksGood())
 			{
-				xingFrame->SetQuality( pOriginalFrame->GetQuality());
-				if(m_rFixerSettings.KeepLameInfo())
+				if(xingFrame->isOriginalCorrect(pOriginalFrame))
 				{
-					xingFrame->SetLameData( pOriginalFrame->GetLameData() );
-					if(m_rFixerSettings.recalculateLameTagHeaderCrc())
-					{
-						xingFrame->SetRecalculateLameTagCrc(true);
-					}
+					m_ProgressDetails.SetState(FixState::SKIPPED);
+					m_rFeedBackInterface.addLogMessage( Log::LOG_INFO, "Original Xing Frame looks OK - skipping");
+					return;
 				}
 			}
-			
-			if(xingFrame->GetMp3Header().IsProtectedByCrc())
-			{
-				bool bRemoveCrc = false;
-				switch(m_rFixerSettings.GetXingFrameCrcOption())
-				{
-					case FixerSettings::CRC_REMOVE: 
-						bRemoveCrc = true; 
-						break;
-					case FixerSettings::CRC_KEEP_IF_CAN:
-						bRemoveCrc = !XingFrame::IsCrcUpdateSupported(xingFrame->GetMp3Header());
-						break;
-					case FixerSettings::CRC_KEEP: 
-						break;
-				}
-
-				if(bRemoveCrc)
-				{
-					xingFrame->GetMp3Header().RemoveCrcProtection();
-				}
-			}
-			
-			xingFrame->Setup(Mp3Objects);
 		}
 
 		m_ProgressDetails.SetState(FixState::WRITING);
@@ -266,7 +242,6 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		outFile.close();
 	
 		m_rFeedBackInterface.addLogMessage(Log::LOG_INFO, "Finished Fix");
-		delete xingFrame;
 		m_ProgressDetails.SetState(FixState::FIXED);
 		m_ProgressDetails.setPercentOfWriting(100);
 		m_rFeedBackInterface.update();

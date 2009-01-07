@@ -27,6 +27,8 @@
 #include <vector>
 #include <list>
 
+class FixerSettings;
+
 class XingFrame : public Mp3Frame
 {
 	typedef std::list<const Mp3Object*> Mp3ObjectList;
@@ -34,7 +36,8 @@ class XingFrame : public Mp3Frame
 	public:
 		XingFrame(const Mp3Header & header);
 
-		void Setup(const Mp3ObjectList & finalObjectList);
+		void Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pOriginalFrame, const FixerSettings &rFixerSettings);
+		bool isOriginalCorrect(const XingFrame* originalFrame);
 
 		virtual void writeToFile(FileBuffer & originalFile, std::ofstream & rOutFile) const;
 

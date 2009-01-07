@@ -66,6 +66,9 @@ class FixerSettings : public ReadSettings
 		enum XingFrameCrcOption { CRC_REMOVE, CRC_KEEP_IF_CAN, CRC_KEEP};
 		XingFrameCrcOption GetXingFrameCrcOption() const {return m_XingFrameCrcOption;}
 		void setXingFrameCrcOption(XingFrameCrcOption e) {m_XingFrameCrcOption = e;}
+
+		bool skipIfXingTagLooksGood() const { return m_bSkipIfXingTagLooksGood;}
+		void setSkipIfXingTagLooksGood(bool bSkip) { m_bSkipIfXingTagLooksGood = bSkip;}
 		
 	protected:
 		Mp3ObjectType::Set m_RemoveTypes;
@@ -74,6 +77,7 @@ class FixerSettings : public ReadSettings
 		bool m_bLogDetail;
 		LameOption m_LameInfoOption;
 		bool m_bSkipNonVbr;
+		bool m_bSkipIfXingTagLooksGood;
 		XingFrameCrcOption m_XingFrameCrcOption;
 		
 };

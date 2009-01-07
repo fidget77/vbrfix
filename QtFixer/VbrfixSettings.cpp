@@ -64,6 +64,7 @@ void VbrfixSettings::syncGuiTo()
 	removeApeTags->setChecked(options.RemoveType(Mp3ObjectType::APE_TAG));
 	removeUnknownData->setChecked(options.RemoveType(Mp3ObjectType::UNKNOWN_DATA));
 	skipNonVbr->setChecked(options.skippingNonVbr());
+	skipCorrectXing->setChecked(options.skipIfXingTagLooksGood());
 
 	// output method
 	QRadioButton* selected = NULL;
@@ -99,6 +100,8 @@ void VbrfixSettings::syncFromGui()
 	options.SetRemoveType(Mp3ObjectType::UNKNOWN_DATA, removeUnknownData->isChecked());
 
 	options.setSkippingNonVbr(skipNonVbr->isChecked());
+
+	options.setSkipIfXingTagLooksGood(skipCorrectXing->isChecked());
 
 	// output method
 	Options::OutputFileMethod outMethod = Options::PROMPT;
