@@ -41,8 +41,12 @@ namespace
 
 	const unsigned int HEADER_BYTES = 4;
 	const int INVALID_XING_OFFSET = -1;
+	
+	const int maxLameBodySize = 208;
+	const int lameHeadSize = 20;
 
 	const unsigned int TOC_SIZE = 100;
+	const int XING_DATA_SIZE = HEADER_BYTES + HEADER_BYTES + TOC_SIZE + HEADER_BYTES + HEADER_BYTES + HEADER_BYTES;
 
 	const std::string XingIdentifier = "Xing";
 
@@ -73,6 +77,7 @@ namespace
 	}
 	unsigned long GetXingDataSize(unsigned long uXingFlags)
 	{
+		// TODO I don't think this is correct but should always be the same size regardless of the flags?
 		unsigned long size = HEADER_BYTES + HEADER_BYTES; // Xing + Flags sizes
 		if(uXingFlags & FRAMES_FLAG) size += HEADER_BYTES;
 		if(uXingFlags & BYTES_FLAG) size += HEADER_BYTES;
@@ -190,6 +195,10 @@ void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 	}
 	
 	// rest of space of frame
+	if(size() < buffer.size())
+	{
+		throw "Internal error with Xing/Lame writing tag";
+	}
 	const unsigned long iRest = size() - buffer.size();
 	buffer.insert(buffer.end(), iRest, '\0');
 	
@@ -252,11 +261,9 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pO
 	}
 	
 
-	unsigned int minSize = GetXingHeaderOffset(m_Header) + 120;
-	if(HasLameInfo())
-	{
-		minSize += 20 + 208;
-	}
+	unsigned int minSize = GetXingHeaderOffset(m_Header) + XING_DATA_SIZE;
+	if(HasLameInfo()) minSize += m_LameData.size();
+	
 	// make sure the frame is big enough 
 	while(size() < minSize)
 	{
@@ -327,21 +334,37 @@ XingFrame * XingFrame::Check(CheckParameters & rParams)
 	// must be called from Mp3Frame::Check() or the Mp3Header might not have been verified and things like that`
 	Mp3Header header(mp3FileBuffer.GetFromBigEndianToNative());
 	const int iXingHeaderPos = GetXingHeaderOffset(header);
-	if(mp3FileBuffer.DoesSay( XingIdentifier, iXingHeaderPos))
+	if(mp3FileBuffer.DoesSay("Info"))
+		throw "VBRFix doesn't currently support Lame 'Info' tags as this is usually associated with CBR files";
+	if(mp3FileBuffer.DoesSay(XingIdentifier, iXingHeaderPos))
 	{
 		const unsigned long uXingFlags = mp3FileBuffer.GetFromBigEndianToNative( iXingHeaderPos + XingIdentifier.size());
 		const unsigned long uLamePosition = GetLameInfoPosition(iXingHeaderPos, uXingFlags);
+		const unsigned long testLamePos = iXingHeaderPos + XING_DATA_SIZE;
+		if(testLamePos != uLamePosition)
+		{
+			if(mp3FileBuffer.DoesSay("LAME", testLamePos))
+				throw "Unknown error with LAME info";
+		}
 		const bool bContainsLameInfo = mp3FileBuffer.DoesSay("LAME", uLamePosition);
 		XingFrame *pNewFrame = new XingFrame(mp3FileBuffer.position(), header);
 		pNewFrame->m_Flags = uXingFlags;
 		if(bContainsLameInfo)
 		{
-			const int LAME_LENGTH = (header.GetFrameSize() - uLamePosition);
-			std::vector< unsigned char > lameInfo(LAME_LENGTH);
-			for(int i = 0 ; i < LAME_LENGTH; ++i)
+			const int lameLength = (header.GetFrameSize() - uLamePosition);
+			
+			std::vector< unsigned char > lameInfo(lameLength);
+			for(int i = 0 ; i < lameLength; ++i)
 			{
 				lameInfo[i] = mp3FileBuffer[uLamePosition + i];
 			}
+			const int maxLameSize = (maxLameBodySize + lameHeadSize);
+			for(int i = maxLameSize; i < lameLength; ++i)
+			{
+				if(lameInfo[i] != 0) 
+					throw "Unexpectedly long LAME info tag";
+			}
+
 			pNewFrame->SetLameData(lameInfo);
 		}
 		int iQualPos = iXingHeaderPos + XingIdentifier.size() + sizeof(uXingFlags);
