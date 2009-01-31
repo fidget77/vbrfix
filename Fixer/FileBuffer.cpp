@@ -60,7 +60,8 @@ unsigned char FileBuffer::operator [ ]( off_type i ) const
 		ArrayDeleter<unsigned char> cleanUpArray(buffer); // will delete the array when it goes out of scope
 		m_Stream->read(reinterpret_cast<char*>(buffer), size);
 		m_InternalBuffer.insert(m_InternalBuffer.end(), buffer, buffer + size);
-		if(m_Stream->fail()) throw ("File Read error");
+		if(m_Stream->fail()) 
+			throw ("File Read error");
 	}
 	return m_InternalBuffer[i];
 }
@@ -119,6 +120,8 @@ bool FileBuffer::CanRead( off_type iCount ) const
 bool FileBuffer::DoesSay(const std::string& text, off_type iStartingfromByte) const
 {
 	assert(!text.empty());
+	if(!CanRead(iStartingfromByte + text.size()))
+		return false;
 	for(off_type i = 0; i < text.size(); ++i)
 	{
 		if(text[i] != (*this)[i + iStartingfromByte]) return false;

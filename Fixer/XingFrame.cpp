@@ -289,7 +289,7 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pO
 	m_Toc.reserve(TOC_SIZE);
 
 	// Generate TOC
-	for(int iPercent = 0; iPercent < TOC_SIZE; ++iPercent)
+	for(unsigned int iPercent = 0; iPercent < TOC_SIZE; ++iPercent)
 	{
 		const int iFrame = static_cast<int>((iPercent / double(TOC_SIZE)) * framePositions.size());
 		const double dValue = 256 * (framePositions[iFrame] / (1.0 * iNewStreamSize));
@@ -334,7 +334,7 @@ XingFrame * XingFrame::Check(CheckParameters & rParams)
 	// must be called from Mp3Frame::Check() or the Mp3Header might not have been verified and things like that`
 	Mp3Header header(mp3FileBuffer.GetFromBigEndianToNative());
 	const int iXingHeaderPos = GetXingHeaderOffset(header);
-	if(mp3FileBuffer.DoesSay("Info"))
+	if(mp3FileBuffer.DoesSay("Info", iXingHeaderPos))
 		throw "VBRFix doesn't currently support Lame 'Info' tags as this is usually associated with CBR files";
 	if(mp3FileBuffer.DoesSay(XingIdentifier, iXingHeaderPos))
 	{

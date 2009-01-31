@@ -3,41 +3,27 @@ BUILDING
 Installing QT is the difficult bit:
 Information can be found in the trolltech qt documentation (http://doc.trolltech.com/). Click GettingStarted-> Installation -> choose your platform
 
-Building may take up a lot of Hard Disk space (potentially in excess of 10GB) particularly when using the Visual Studio methods.
-
-Static linking has the advantage that the QT dlls do not need to be distributed with the VbrFix application. I'd only use static if you want to produce versions to distribute.
+Static linking has the advantage that the QT dlls do not need to be distributed with the VbrFix application.
 
 These methods are only a simple guide and an element of luck is required.
 
 BUILDING ON WINDOWS
 -------------------
-
 Method 1: (Visual Studio Express)
-	(I think method 2 may be more 'correct', but this one may be easier, uses less disk space and it seems to work better)
-	Install MS Visual C++ 2008 Express Edition
-	Follow the same steps as Method 3 but instead of doing 'build the debug libraries' do:
-		In visual studio setup the VC++ Directories to include QT (do include, lib and executables) (not sure if this step in required)
-		Open the Visual Studio Express Command Prompt (from start menu\ms vis c++ express edition\vis stud tools)
-		Type 'configure' wait for a bit
-		Type 'nmake' wait for a bit
-	Continue method 2 from the 'wait for ages' part
-	You may need to copy dlls from the qt install directory/bin into the directory where you built VbrFix in order to run it
-
-Method 2: (Visual Studio Express)
 	Install MS Visual C++ 2008 Express Edition
 	Find trolltech website and download something like qt-win-opensource-src-4.4.3.zip
 	Unzip it into a dir like c:\Qt\4.4.3
-	In visual studio setup the VC++ Directories to include QT (do include, lib and executables) (not sure if this step in needed)
 	Open the Visual Studio Express Command Prompt (from start menu\ms vis c++ express edition\vis stud tools)
-	Type 'configure -platform win32-msvc -static'
-	Wait for a bit
-	Type 'nmake'
-	Wait for ages (don't panic should it not all compile, just as long as most of it seems to have)
+	Type 'configure -platform win32-msvc' (add -static for static linking)
+	Type 'nmake sub-src'
+	Type 'nmake sub-tools'
 	Get the VbrFix source code into a directory somewhere
 	In the Visual Studio command prompt 'cd' to the directory where VbrFix is located
-	Modify createvcproj.bat to use the location of QT if it's not c:\Qt\4.4.3
-	Run createvcproj.bat (all it does is c:\Qt\4.4.3\bin\qmake.exe -tp vc -r)
-	Open the vbrfix.sln file that has been created in Visual Studio Express and build it)
+	Type 'c:\Qt\4.4.3\bin\qmake.exe -tp vc -r'
+	Open the newly created vbrfix.dsw file with Visual Studio Express, do any requested coversion
+	Build and run.
+	(non-static mode) - You may need to copy dlls from the qt install directory/bin into the directory where you built VbrFix in order to run it
+	Note all project changes must be done through the .pro files and then 'c:\Qt\4.4.3\bin\qmake.exe -tp vc -r' rerun
 	
 Method 3: (mingw)
 	Find trolltech website and download something like qt-win-opensource-4.4.3-mingw.exe
@@ -46,8 +32,8 @@ Method 3: (mingw)
 	Get the vbrfix source code into a directory somewhere
 	Open the qt command prompt (on the start menu under QT somewhere)
 	In the opened command prompt 'cd' to the directory where VbrFix is located
-	Type 'qmake vbrfix.pro' return
-	Type 'make' return
+	Type 'qmake vbrfix.pro'
+	Type 'make'
 	You may need to copy dlls from the qt install directory/bin into the directory where you built VbrFix in order to run it
 
 BUILDING ON OTHER PLATFORMS
