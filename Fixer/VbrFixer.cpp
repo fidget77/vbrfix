@@ -31,6 +31,7 @@
 #include <sstream>
 #include <cassert>
 #include <algorithm>
+#include <map>
 
 namespace
 {
@@ -103,6 +104,31 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		const Mp3Reader::ConstMp3ObjectList& OriginalMp3Objects = mp3Reader.GetMp3Objects();
 		Mp3Reader::ConstMp3ObjectList Mp3Objects = OriginalMp3Objects;
 
+		Mp3Header mostPopularFrameHeader(0);
+		// check frame header consistency
+		{
+			std::map<Mp3Header, int> headers;
+			std::stringstream headerVariation;
+			for(Mp3Reader::ConstMp3ObjectList::iterator objI = Mp3Objects.begin(); objI != Mp3Objects.end(); ++objI)
+			{
+				if((*objI)->GetObjectType().IsTypeOfFrame())
+				{
+					Mp3Header header = static_cast<const Mp3Frame*>(*objI)->GetMp3Header();
+					headers[header]++;
+				}
+			}
+
+			std::stringstream headersText; headersText << "Found MP3 headers: ";
+			int maxCount = 0;
+			for(std::map<Mp3Header, int>::const_iterator headerI = headers.begin(); headerI != headers.end(); ++headerI)
+			{
+				headersText << std::dec <<"[x" << headerI->second << "]0x" << std::hex << std::uppercase << headerI->first.GetHeader() << " ";
+				maxCount = std::max( headerI->second, maxCount);
+				if(maxCount == headerI->second) mostPopularFrameHeader = headerI->first;
+			}
+			m_rFeedBackInterface.addLogMessage(Log::LOG_INFO, headersText.str());
+		}
+
 		m_ProgressDetails.setPercentOfProcessing(20);
 		m_rFeedBackInterface.update();
 
@@ -147,10 +173,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		{
 			Mp3Reader::ConstMp3ObjectList::iterator firstFrame = std::find_if(Mp3Objects.begin(), Mp3Objects.end(), IsOfMp3ObjectType(Mp3ObjectType::GetFrameTypes()));
 			assert(firstFrame != Mp3Objects.end()); // as it is vbr there must be a first frame
-			const Mp3Object* pMp3Object = *firstFrame;
-			assert(pMp3Object->GetObjectType().IsTypeOfFrame());
-			const Mp3Frame* pFirstFrame = static_cast<const Mp3Frame* >(pMp3Object);
-			xingFrame.reset(new XingFrame(pFirstFrame->GetMp3Header()));
+			xingFrame.reset(new XingFrame(mostPopularFrameHeader));
 			Mp3Objects.insert(firstFrame, xingFrame.get());
 		}
 	

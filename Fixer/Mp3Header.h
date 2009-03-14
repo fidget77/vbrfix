@@ -73,6 +73,11 @@ class Mp3Header
 		
 		void RemoveCrcProtection();
 
+		bool operator < (const Mp3Header& rOther) const
+		{
+			return m_Header < rOther.m_Header;
+		}
+
 	private:
 		enum {HEADER_BITS = 32};
 		_ul32 m_Header;
