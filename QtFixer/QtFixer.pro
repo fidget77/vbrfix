@@ -5,21 +5,24 @@
 
 FORMS += settings.ui \
          vbrfixui.ui \
-         about.ui 
+         about.ui \
+         mp3headerInfo.ui
 HEADERS += Mp3FileListItem.h \
            VbrfixMain.h \
            VbrfixSettings.h \
            VbrfixThread.h \
            Options.h \
            VbrfixAbout.h \
-           ComboManager.h 
+           ComboManager.h \
+           VbrfixGetHeaderInfo.h
 SOURCES += Main.cpp \
            Mp3FileListItem.cpp \
            VbrfixMain.cpp \
            VbrfixSettings.cpp \
            VbrfixThread.cpp \
            Options.cpp \
-           VbrfixAbout.cpp 
+           VbrfixAbout.cpp \
+           VbrfixGetHeaderInfo.cpp
 RESOURCES = res.qrc
 POST_TARGETDEPS += ../Fixer/lib/libFixer.a
 LIBS += -L../Fixer/lib/ -lFixer

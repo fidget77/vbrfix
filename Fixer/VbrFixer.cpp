@@ -84,6 +84,72 @@ VbrFixer::~VbrFixer()
 {
 }
 
+struct ConsistencyChecker
+{
+	ConsistencyChecker() : mostPopularFrameHeader(0){}
+	Mp3Header mostPopularFrameHeader;
+	
+	void workOn(Mp3Reader::ConstMp3ObjectList& objects, bool remove, FeedBackInterface & feedBack)
+	{
+		threshold = objects.size() / 100;
+		readMode = true;
+		for(Mp3Reader::ConstMp3ObjectList::iterator iter = objects.begin(); iter != objects.end(); ++iter)
+			(*this)(*iter);
+		
+		std::stringstream headersText; headersText << "Found MP3 headers: ";
+		int maxCount = 0;
+		for(std::map<Mp3Header, int>::const_iterator headerI = headers.begin(); headerI != headers.end(); ++headerI)
+		{
+			int count = headerI->second;
+			headersText << std::dec <<"[x" << count << "]0x" << std::hex << std::uppercase << headerI->first.GetHeader() << " ";
+			maxCount = std::max(count, maxCount);
+			if(maxCount == count) mostPopularFrameHeader = headerI->first;
+		}
+		feedBack.addLogMessage(Log::LOG_DETAIL, headersText.str());
+		if(layers.size() > 1)
+			feedBack.addLogMessage(Log::LOG_WARNING, "Found inconsistent frame layer versions");
+		if(versions.size() > 1)
+			feedBack.addLogMessage(Log::LOG_WARNING, "Found inconsistent frame MPEG versions");
+		if(frequencies.size() > 1)
+			feedBack.addLogMessage(Log::LOG_WARNING, "Found inconsistent frame Sample Frequencies");
+
+		if(remove)
+		{
+			readMode = false;
+			objects.erase(std::remove_if(objects.begin(), objects.end(), *this), objects.end());
+		}
+	}
+
+	std::map<Mp3Header, int> headers;
+	std::map<int, int> frequencies;
+	std::map<Mp3Header::MpegLayerVersion, int> layers;
+	std::map<Mp3Header::MpegVersion, int> versions;
+	bool readMode;
+	int threshold;
+
+	bool operator()(const Mp3Object* obj)
+	{
+		if(obj->GetObjectType().IsTypeOfFrame())
+		{
+			Mp3Header header = static_cast<const Mp3Frame&>(*obj).GetMp3Header();
+			if(readMode)
+			{
+				headers[header]++;
+				frequencies[header.GetSampleFrequency()]++;
+				layers[header.GetLayerVersion()]++;
+				versions[header.GetMpegVersion()]++;
+			}
+			else
+			{
+				if(frequencies[header.GetSampleFrequency()] < threshold) return true;
+				if(layers[header.GetLayerVersion()] < threshold) return true;
+				if(versions[header.GetMpegVersion()] < threshold) return true;
+			}
+		}
+		return false;
+	}
+};
+
 void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFileName )
 {
 	try
@@ -104,30 +170,9 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		const Mp3Reader::ConstMp3ObjectList& OriginalMp3Objects = mp3Reader.GetMp3Objects();
 		Mp3Reader::ConstMp3ObjectList Mp3Objects = OriginalMp3Objects;
 
-		Mp3Header mostPopularFrameHeader(0);
-		// check frame header consistency
-		{
-			std::map<Mp3Header, int> headers;
-			std::stringstream headerVariation;
-			for(Mp3Reader::ConstMp3ObjectList::iterator objI = Mp3Objects.begin(); objI != Mp3Objects.end(); ++objI)
-			{
-				if((*objI)->GetObjectType().IsTypeOfFrame())
-				{
-					Mp3Header header = static_cast<const Mp3Frame*>(*objI)->GetMp3Header();
-					headers[header]++;
-				}
-			}
+		ConsistencyChecker consistencyChecker;
 
-			std::stringstream headersText; headersText << "Found MP3 headers: ";
-			int maxCount = 0;
-			for(std::map<Mp3Header, int>::const_iterator headerI = headers.begin(); headerI != headers.end(); ++headerI)
-			{
-				headersText << std::dec <<"[x" << headerI->second << "]0x" << std::hex << std::uppercase << headerI->first.GetHeader() << " ";
-				maxCount = std::max( headerI->second, maxCount);
-				if(maxCount == headerI->second) mostPopularFrameHeader = headerI->first;
-			}
-			m_rFeedBackInterface.addLogMessage(Log::LOG_INFO, headersText.str());
-		}
+		consistencyChecker.workOn(Mp3Objects, m_rFixerSettings.removeInconsistentFrames(), m_rFeedBackInterface);
 
 		m_ProgressDetails.setPercentOfProcessing(20);
 		m_rFeedBackInterface.update();
@@ -173,7 +218,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 		{
 			Mp3Reader::ConstMp3ObjectList::iterator firstFrame = std::find_if(Mp3Objects.begin(), Mp3Objects.end(), IsOfMp3ObjectType(Mp3ObjectType::GetFrameTypes()));
 			assert(firstFrame != Mp3Objects.end()); // as it is vbr there must be a first frame
-			xingFrame.reset(new XingFrame(mostPopularFrameHeader));
+			xingFrame.reset(new XingFrame(consistencyChecker.mostPopularFrameHeader));
 			Mp3Objects.insert(firstFrame, xingFrame.get());
 		}
 	

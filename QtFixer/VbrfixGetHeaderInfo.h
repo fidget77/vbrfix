@@ -1,5 +1,5 @@
 /*//////////////////////////////////////////////////////////////////////////////////
-// copyright : (C) 2006  by William Pye
+// copyright : (C) 2009  by William Pye
 // contact   : www.willwap.co.uk
 ///////////////////////////////////////////////////////////////////////////////////
 //
@@ -19,45 +19,20 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////*/
 
-#ifndef FEEDBACKINTERFACE_H
-#define FEEDBACKINTERFACE_H
+#ifndef VBRFIXGETHEADERINFO_H
+#define VBRFIXGETHEADERINFO_H
 
-#include "Mp3FileObject.h"
-#include <string>
+#include <QtGui>
+#include "ui_mp3headerInfo.h"
 
-namespace Log
+class VbrfixGetHeaderInfo: public QDialog, public Ui_GetMp3HeaderInfo
 {
-	enum Importance{LOG_DETAIL, LOG_INFO, LOG_WARNING, LOG_ERROR};
-	class LogItem
-	{
-		public:
-			std::string GetText() const {return m_Text;}
-			Importance GetImportance() const {return m_Importance;}
-			LogItem() {}
-			LogItem(Importance imporance, std::string sText)
-				: m_Text(sText) , m_Importance(imporance){}
-		private:
-			std::string m_Text;
-			Importance m_Importance;
-	};
-}
+	Q_OBJECT
 
-class FeedBackInterface
-{
 	public:
-		FeedBackInterface() {}
-
-		virtual ~FeedBackInterface() {}
-
-		virtual void update() = 0;
-
-		virtual void addLogMessage(const Log::LogItem log) = 0;
-		void addLogMessage(const Log::Importance i, const std::string text)
-		{
-			addLogMessage(Log::LogItem(i, text));
-		}
-
-		virtual bool HasUserCancelled() const = 0;
+		VbrfixGetHeaderInfo(QWidget *parent);
+	private slots:
+		void on_getHeaderInfoButton_clicked();
 };
 
 #endif

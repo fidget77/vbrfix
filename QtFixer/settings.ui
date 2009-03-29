@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>547</height>
+    <height>571</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -104,6 +104,13 @@
          <widget class="QCheckBox" name="skipCorrectXing" >
           <property name="text" >
            <string>Skip files where the Xing tag appears correct</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="removeInconsistentFrames" >
+          <property name="text" >
+           <string>Remove inconsistent frames</string>
           </property>
          </widget>
         </item>
@@ -286,7 +293,7 @@
              <bool>false</bool>
             </property>
             <property name="text" >
-             <string>Allow filesnames with no extension</string>
+             <string>Allow filenames with no extension</string>
             </property>
            </widget>
           </item>

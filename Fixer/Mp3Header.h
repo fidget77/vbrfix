@@ -22,8 +22,6 @@
 #ifndef MP3HEADER_H
 #define MP3HEADER_H
 
-// TODO Implement the functions that are not complete
-
 class Mp3Header
 {
 	typedef unsigned long _ul32;

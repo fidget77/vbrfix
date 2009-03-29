@@ -69,6 +69,9 @@ class FixerSettings : public ReadSettings
 
 		bool skipIfXingTagLooksGood() const { return m_bSkipIfXingTagLooksGood;}
 		void setSkipIfXingTagLooksGood(bool bSkip) { m_bSkipIfXingTagLooksGood = bSkip;}
+
+		bool removeInconsistentFrames() const { return m_bRemoveInconsistentFrames;}
+		void setRemoveInconsistentFrames(bool b){ m_bRemoveInconsistentFrames = b;}
 		
 	protected:
 		Mp3ObjectType::Set m_RemoveTypes;
@@ -79,6 +82,7 @@ class FixerSettings : public ReadSettings
 		bool m_bSkipNonVbr;
 		bool m_bSkipIfXingTagLooksGood;
 		XingFrameCrcOption m_XingFrameCrcOption;
+		bool m_bRemoveInconsistentFrames;
 		
 };
 

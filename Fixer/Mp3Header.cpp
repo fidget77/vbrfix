@@ -38,6 +38,8 @@ namespace
 	const IndexMask PRIVATE_MASK(8);
 	const IndexMask CHANNEL_MASK(6, 2);
 	const IndexMask MODE_EXT_MASK(4, 2);
+	const IndexMask MODE_EXT_JOIN_STEREO(5);
+	const IndexMask MODE_EXT_MS_STEREO(4);
 	const IndexMask COPYRIGHT_MASK(3);
 	const IndexMask ORIGINAL_MASK(2);
 	const IndexMask EMPHASIS_MASK(0, 2);
@@ -302,4 +304,22 @@ void Mp3Header::RemoveCrcProtection( )
 {
 	NOT_CRC_PROTECTED_MASK.SetOn(m_Header, true);
 }
+
+Mp3Header::ModeExtension Mp3Header::GetModeExtension() const
+{
+	const _ul32 iIndex = MODE_EXT_MASK.GetIndex(m_Header);
+	static ModeExtension chans[] = {BANDS4to31, BANDS8to31, BANDS12to31, BANDS16to3};
+	return chans[iIndex];
+}
+
+bool Mp3Header::IsModeExtIntensityStereo() const
+{
+	return MODE_EXT_JOIN_STEREO.IsOn(m_Header);
+}
+
+bool Mp3Header::IsModeExtMsStereo() const
+{
+	return MODE_EXT_MS_STEREO.IsOn(m_Header);
+}
+
 

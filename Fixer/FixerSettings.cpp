@@ -30,6 +30,7 @@ FixerSettings::FixerSettings( )
 	, m_bSkipNonVbr(true)
 	, m_XingFrameCrcOption(CRC_REMOVE)
 	, m_bSkipIfXingTagLooksGood(true)
+	, m_bRemoveInconsistentFrames(false)
 {
 	m_RemoveTypes.insert(Mp3ObjectType::XING_FRAME);
 	m_RemoveTypes.insert(Mp3ObjectType::VBRI_FRAME);

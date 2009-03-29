@@ -79,7 +79,17 @@ void Mp3Reader::CheckForUnknownData()
 		UnknownDataObject * pUnknownData = new UnknownDataObject(lastUnderstoodPosition, size);
 		m_Mp3Objects.push_back(pUnknownData);
 		std::stringstream ss;
-		ss << "unknown data " << lastUnderstoodPosition << " to " << iPos << " , size = "<< size;
+		m_rMp3FileBuffer.setPosition(lastUnderstoodPosition);
+		ss << "unknown data " << lastUnderstoodPosition << " to " << iPos << " , size = " << size << " (";
+		for(unsigned int i = 0; i < std::min(size, 10UL); ++i) ss << m_rMp3FileBuffer[i];
+		if(size > 10) 
+		{
+			ss << "  ...  ";
+			for(unsigned int i = std::max(0UL, size - 10); i < size; ++i) ss << m_rMp3FileBuffer[i];
+		}
+		ss << ")";
+		m_rMp3FileBuffer.setPosition(iPos);
+
 		m_rFeedBack.addLogMessage(Log::LogItem(Log::LOG_WARNING, ss.str()));
 		m_rProgessDetails.foundObject(pUnknownData);
 	}

@@ -24,6 +24,7 @@
 #include "VbrfixThread.h"
 #include "VbrfixSettings.h"
 #include "VbrfixAbout.h"
+#include "VbrfixGetHeaderInfo.h"
 
 #include "VbrFixer.h"
 #include "FeedBackInterface.h"
@@ -76,6 +77,12 @@ void VbrfixMain::on_actionSettings_triggered()
 	{
 		m_Options = options;
 	}
+}
+
+void VbrfixMain::on_actionMp3_Header_Info_triggered()
+{
+	VbrfixGetHeaderInfo headerInfoDlg(this);
+	headerInfoDlg.exec();
 }
 
 void VbrfixMain::on_actionAdd_Mp3_s_triggered()
@@ -335,6 +342,9 @@ void VbrfixMain::threadGuiEvent(int eEvent)
 					case Log::LOG_WARNING:
 						logText->setTextColor(Qt::darkYellow);
 						if(m_pCurrentFixItem) m_pCurrentFixItem->SetWarning();
+						break;
+					case Log::LOG_DETAIL:
+						logText->setTextColor(Qt::gray);
 						break;
 					default:
 						logText->setTextColor(Qt::black);

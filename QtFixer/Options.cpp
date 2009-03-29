@@ -172,6 +172,7 @@ void Options::SaveLoad(bool bSave)
 	
 	SaveLoadHelper<bool >(bSave, *settings, m_AlwaysSkip, "Always Skip");
 	SaveLoadHelper<bool >(bSave, *settings, m_bSkipNonVbr, "Skip Non VBR");
+	SaveLoadHelper<bool >(bSave, *settings, m_bRemoveInconsistentFrames, "Remove Inconsistent Frames");
 	SaveLoadHelper<bool >(bSave, *settings, m_bSkipIfXingTagLooksGood, "Skip Correct Xing");
 	SaveLoadHelper<int >(bSave, *settings, m_MinPercentUnderstood, "Minimum Understood Percent");	
 	SaveLoadHelper<bool >(bSave, *settings, m_bKeepSuffixIfNotSpecified, "KeepSuffixIfNotSpecified");
