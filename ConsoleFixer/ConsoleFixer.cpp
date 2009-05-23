@@ -34,12 +34,12 @@ ConsoleFixer::~ConsoleFixer()
 {
 }
 
-ConsoleFixer::ConsoleFixer( const CommandList& args)
+ConsoleFixer::ConsoleFixer(const CommandList& args)
 	: m_Args(args)
 {
 }
 
-void ConsoleFixer::addLogMessage( const Log::LogItem sMsg )
+void ConsoleFixer::addLogMessage(const Log::LogItem sMsg)
 {
 	std::cout << sMsg.GetText() << std::endl;
 }
@@ -51,30 +51,41 @@ bool ConsoleFixer::Run( )
 	FixerSettings settings;
 	VbrFixer fixer(*this, settings);
 	CommandReader cmdReader(m_Args);
-	if((cmdReader.GetParameterList().size() == 2) && GetFixerSettingsFromOptions(settings, cmdReader.GetOptionList()))
+	if ((cmdReader.GetParameterList().size() == 2) &&
+	    GetFixerSettingsFromOptions(settings, cmdReader.GetOptionList()))
 	{
 		const std::string& inFile = cmdReader.GetParameterList().front();
 		const std::string& outFile = cmdReader.GetParameterList().back();
-	
+
 		std::cout << "Fixing " << inFile << "->" << outFile << std::endl;
 		fixer.Fix(inFile, outFile);
 		std::cout << "Finished Fixing" << std::endl;
-	}
-	else
+	} 
+	else 
 	{
 		std::cout << "Usage :" << std::endl;
 		std::cout << "./vbrfix [--option] [--option] in.mp3 out.mp3" << std::endl;
-		std::cout << "options (case sensitive):" << std::endl << "--removedid3v1" << std::endl << "--removedId3v2" << std::endl << "--removeUnknown" << std::endl << "--removeLame" << std::endl << "--keepLame" << std::endl << "--keepLameUpdateCrc" << std::endl << "--XingFrameCrcProtectIfCan" << std::endl;
+		std::cout <<
+			"options (case sensitive):" << std::endl <<
+			"--removeId3v1" << std::endl <<
+			"--removeId3v2" << std::endl <<
+			"--removeUnknown" << std::endl <<
+			"--removeLame" << std::endl <<
+			"--keepLame" << std::endl <<
+			"--keepLameUpdateCrc" << std::endl <<
+			"--XingFrameCrcProtectIfCan" << std::endl;
 	}
 	return true;
 }
 
-bool ConsoleFixer::GetFixerSettingsFromOptions( FixerSettings & settings, const CommandReader::OptionList & optionList)
+bool ConsoleFixer::GetFixerSettingsFromOptions(FixerSettings &settings,
+					       const CommandReader::OptionList &optionList)
 {
-	for(CommandReader::OptionList::const_iterator iter = optionList.begin(); iter != optionList.end(); ++iter)
+	for (CommandReader::OptionList::const_iterator iter = optionList.begin();
+	     iter != optionList.end(); ++iter)
 	{
 		const std::string & option = *iter;
-		if(option == "removedId3v1")
+		if (option == "removedId3v1")
 		{
 			settings.SetRemoveType(Mp3ObjectType::ID3V1_TAG, true);
 			std::cout << "Remove Id3v1 on" << std::endl;
@@ -111,12 +122,9 @@ bool ConsoleFixer::GetFixerSettingsFromOptions( FixerSettings & settings, const 
 		}
 		else
 		{
-			std::cout << "Not understood option " << option << std::endl;
+			std::cout << "Option <" << option << "> not understood" << std::endl;
 			return false;
 		}
 	}
 	return true;
 }
-
-
-
