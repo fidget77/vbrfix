@@ -23,6 +23,7 @@
 #include <QtGui>
 #include <sstream>
 #include <string>
+#include <memory>
 
 Options::Options( )
 	: FixerSettings()

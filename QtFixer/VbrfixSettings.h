@@ -27,6 +27,7 @@
 
 class Options;
 #include <vector>
+#include <memory>
 #include "FixerSettings.h"
 
 template < class T > class ComboManager;
