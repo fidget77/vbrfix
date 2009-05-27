@@ -62,6 +62,7 @@ void VbrfixSettings::syncGuiTo()
 	removeId3v1Tags->setChecked(options.RemoveType(Mp3ObjectType::ID3V1_TAG));
 	removeId3v2Tags->setChecked(options.RemoveType(Mp3ObjectType::ID3V2_TAG));
 	removeApeTags->setChecked(options.RemoveType(Mp3ObjectType::APE_TAG));
+	removeLyrics3Tags->setChecked(options.RemoveType(Mp3ObjectType::LYRICS_TAG));
 	removeUnknownData->setChecked(options.RemoveType(Mp3ObjectType::UNKNOWN_DATA));
 	skipNonVbr->setChecked(options.skippingNonVbr());
 	removeInconsistentFrames->setChecked(options.removeInconsistentFrames());
@@ -98,6 +99,7 @@ void VbrfixSettings::syncFromGui()
 	options.SetRemoveType(Mp3ObjectType::ID3V1_TAG, removeId3v1Tags->isChecked());
 	options.SetRemoveType(Mp3ObjectType::ID3V2_TAG, removeId3v2Tags->isChecked());
 	options.SetRemoveType(Mp3ObjectType::APE_TAG, removeApeTags->isChecked());
+	options.SetRemoveType(Mp3ObjectType::LYRICS_TAG, removeLyrics3Tags->isChecked());
 	options.SetRemoveType(Mp3ObjectType::UNKNOWN_DATA, removeUnknownData->isChecked());
 
 	options.setSkippingNonVbr(skipNonVbr->isChecked());

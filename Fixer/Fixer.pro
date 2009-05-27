@@ -22,7 +22,8 @@ HEADERS += BitReader.h \
            ApeTag.h \
            VbriFrame.h \
            ReadSettings.h \
-           GenHelpers.h 
+           GenHelpers.h \
+           LyricsTag.h
 SOURCES += FileBuffer.cpp \
            Mp3Frame.cpp \
            Mp3Header.cpp \
@@ -38,7 +39,8 @@ SOURCES += FileBuffer.cpp \
            ApeTag.cpp \
            VbriFrame.cpp \
            ReadSettings.cpp \
-           Version.cpp 
+           Version.cpp \
+           LyricsTag.cpp
 CONFIG += warn_on \
 staticlib \
 exceptions \

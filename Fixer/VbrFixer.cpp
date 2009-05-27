@@ -203,6 +203,21 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 			), Mp3Objects.end());
 		}
 
+		// if there is just a lyrics tag and no ide3v1 tag then give an error
+		{
+			Mp3ObjectType::Set objTypes; // get all of the remaining object types
+			std::transform(Mp3Objects.begin(), Mp3Objects.end(), 
+				std::inserter(objTypes, objTypes.end()), std::mem_fun(&Mp3Object::GetObjectType));
+
+			assert(!objTypes.empty());
+			
+			if((objTypes.count(Mp3ObjectType::LYRICS_TAG) != 0) 
+				&& (objTypes.count(Mp3ObjectType::ID3V1_TAG) == 0))
+			{
+				throw "Resultant mp3 has a Lyrics3 tag but no Id3v1 tag. Please add an Id3v1 tag or choose to remove the Lyrics tag";
+			}
+		}
+
 		m_ProgressDetails.setPercentOfProcessing(60);
 		m_rFeedBackInterface.update();
 	

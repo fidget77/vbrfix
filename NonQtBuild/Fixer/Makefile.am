@@ -7,4 +7,4 @@ libVbrfixer_a_SOURCES = ApeTag.cpp ApeTag.h BitReader.h CrcCalc.cpp CrcCalc.h \
 	Mp3FileObject.cpp Mp3FileObject.h Mp3FileObjectChecker.h Mp3Frame.cpp Mp3Frame.h \
 	Mp3Header.cpp Mp3Header.h Mp3Reader.cpp Mp3Reader.h ReadSettings.cpp ReadSettings.h \
 	UnknownDataObject.cpp UnknownDataObject.h VbrFixer.cpp VbrFixer.h VbriFrame.cpp VbriFrame.h \
-	Version.cpp XingFrame.cpp XingFrame.h
+	Version.cpp XingFrame.cpp XingFrame.h LyricsTag.cpp LyricsTag.h

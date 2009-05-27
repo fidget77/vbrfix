@@ -19,8 +19,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////*/
 
-#ifndef LYRICSTAG_H
-#define LYRICSTAG_H
+#ifndef APETAG_H
+#define APETAG_H
 
 #include "Mp3FileObject.h"
 

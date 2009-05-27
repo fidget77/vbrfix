@@ -1,5 +1,5 @@
 /*//////////////////////////////////////////////////////////////////////////////////
-// copyright : (C) 2006  by William Pye
+// copyright : (C) 2009  by William Pye
 // contact   : www.willwap.co.uk
 ///////////////////////////////////////////////////////////////////////////////////
 //
@@ -19,9 +19,24 @@
 //
 ///////////////////////////////////////////////////////////////////////////////////*/
 
-#include "VbrFixer.h"
+#ifndef LYRICSTAG_H
+#define LYRICSTAG_H
 
-std::string VbrFixer::GetFixerVersion( )
+#include "Mp3FileObject.h"
+
+class Lyrics3Tag : public Mp3Object
 {
-	return "0.31(beta)";
-}
+	public:
+		virtual ~Lyrics3Tag();
+		static Lyrics3Tag* Check(CheckParameters & rParams);
+
+		virtual unsigned long size() const;
+		virtual Mp3ObjectType GetObjectType() const {return Mp3ObjectType(Mp3ObjectType::LYRICS_TAG);}
+	protected:
+		Lyrics3Tag(unsigned long oldFilePosition, unsigned long Size);
+
+	private:
+		const unsigned long m_Size;
+};
+
+#endif

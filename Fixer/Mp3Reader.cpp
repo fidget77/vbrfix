@@ -29,6 +29,7 @@
 #include "UnknownDataObject.h"
 #include "Id3Tags.h"
 #include "ApeTag.h"
+#include "LyricsTag.h"
 #include <sstream>
 #include <cassert>
 #include <algorithm>
@@ -55,7 +56,7 @@ Mp3Reader::Mp3Reader(FileBuffer & mp3FileBuffer, FeedBackInterface &feedBack, Re
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Id3v1Tag>());
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Id3v2Tag>());
 	m_ObjectCheckers.push_back(new Mp3ObjectChecker<ApeTag>());
-	//m_ObjectCheckers.push_back(new Mp3ObjectChecker<Lyrics3Tag>());
+	m_ObjectCheckers.push_back(new Mp3ObjectChecker<Lyrics3Tag>());
 }
 
 
