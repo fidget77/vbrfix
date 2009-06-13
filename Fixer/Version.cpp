@@ -23,5 +23,5 @@
 
 std::string VbrFixer::GetFixerVersion( )
 {
-	return "0.31(beta)";
+	return "0.32(beta)";
 }

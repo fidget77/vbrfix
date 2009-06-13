@@ -183,8 +183,9 @@ int Mp3Reader::ReadProgressDetails::GetPercentUnderstood( ) const
 	if(m_FileSize > 0)
 	{
 		assert(m_iUnknownData <= m_FileSize);
-		percent = (m_FileSize - m_iUnknownData) / (m_FileSize / 100);
-		assert(percent >= 0 && percent <= 100);
+		percent = int(((100.0 * (m_FileSize - m_iUnknownData)) / m_FileSize) + 0.5);
+		assert(percent >= -20 && percent <= 120); // ball park
+		percent = std::max(std::min(percent, 100), 0); // limit 0 - 100
 	}
 	return percent;
 }
