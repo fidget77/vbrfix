@@ -381,6 +381,7 @@ void VbrfixMain::finishedFixing()
 					//deal with it. on windows need to delete the file first if exists
 					// set deleteTempFile = false if we do
 					// TODO readonly files
+					// Also check when the destination file is in use
 					QFile::remove(destination);
 
 				}

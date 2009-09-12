@@ -38,8 +38,9 @@ VbrfixSettings::VbrfixSettings(QWidget *parent, Options &options)
 	
 	m_LameComboManager->AddItem(FixerSettings::LAME_REMOVE, "Remove");
 	m_LameComboManager->AddItem(FixerSettings::LAME_KEEP, "Keep VBR Tag Lame Info");
-	m_LameComboManager->AddItem(FixerSettings::LAME_KEEP_CALC_TAG_CRC, "Keep VBR Tag Lame Info(recalculate the CRC) - experimental");
-	
+	m_LameComboManager->AddItem(FixerSettings::LAME_KEEP_CALC_TAG_CRC, "Keep VBR Tag Lame Info(recalculate the CRC) (recommended)");
+	m_LameComboManager->AddItem(FixerSettings::LAME_KEEP_CALC_BOTH_CRCS, "Fix for encspot (experimental & slow - unrecommended)");
+
 	m_XingCrcComboManager->AddItem(FixerSettings::CRC_REMOVE, "No CRC For Xing Frame");
 	m_XingCrcComboManager->AddItem(FixerSettings::CRC_KEEP_IF_CAN, "CRC For Xing Frame if Supported and MP3 has CRC");
 	m_XingCrcComboManager->AddItem(FixerSettings::CRC_KEEP, "CRC For Xing Frame if MP3 has CRC");

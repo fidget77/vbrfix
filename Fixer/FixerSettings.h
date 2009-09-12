@@ -44,7 +44,7 @@ class FixerSettings : public ReadSettings
 		bool AlwaysSkip() const;
 		void SetAlwaysSkip(bool bAlwaysSkip);
 
-		enum LameOption { LAME_REMOVE, LAME_KEEP, LAME_KEEP_CALC_TAG_CRC };
+		enum LameOption { LAME_REMOVE, LAME_KEEP, LAME_KEEP_CALC_TAG_CRC, LAME_KEEP_CALC_BOTH_CRCS };
 
 		LameOption LameInfoOption() const {return m_LameInfoOption;}
 		void SetLameInfoOption(LameOption lameInfo) {m_LameInfoOption = lameInfo;}
@@ -57,7 +57,8 @@ class FixerSettings : public ReadSettings
 		bool loggingDetail() const {return m_bLogDetail;}
 		void setLoggingDetail(bool value) {m_bLogDetail = value;}
 
-		bool recalculateLameTagHeaderCrc() const {return m_LameInfoOption == LAME_KEEP_CALC_TAG_CRC;}
+		bool recalculateLameTagHeaderCrc() const {return (m_LameInfoOption == LAME_KEEP_CALC_TAG_CRC) || (m_LameInfoOption == LAME_KEEP_CALC_BOTH_CRCS);}
+		bool recalculateLameTagHeaderCrcMusic() const {return m_LameInfoOption == LAME_KEEP_CALC_BOTH_CRCS;}
 
 		void Defaults();
 

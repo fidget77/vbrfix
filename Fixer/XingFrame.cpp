@@ -158,10 +158,29 @@ void XingFrame::writeToFile( FileBuffer & originalFile, std::ofstream & rOutFile
 	if(HasLameInfo())
 	{
 		const unsigned long lamePos = buffer.size();
+		
+		const unsigned long iCrcPos = lamePos +  0xBE - 0x9C;
+		
 		// Lame Info
-		buffer.insert(buffer.end(), m_LameData.begin(), m_LameData.end());
 
-		const unsigned long iCrcPos = lamePos + 0xBE - 0x9C;
+		buffer.insert(buffer.end(), m_LameData.begin(), m_LameData.end());
+		if(m_bReCalculateLameMusicCrc)
+		{
+			if(lamePos != 0x9C || iCrcPos != 0xBE)
+			{
+				throw "This type of Lame Info is unsupported, Recalculation of LameCrc cannot be performed. Try turrning off Lame CRC recalculation or logging a bug.";
+			}
+
+			std::vector<unsigned char> bigEndian = EndianHelper::ConvertToBigEndianBytes(m_musicCRC);
+			assert((bigEndian[0] + bigEndian[1]) == 0);
+			if((bigEndian[0] + bigEndian[1]) != 0)
+			{
+				throw "Error Caclulation Lame Music CRC";
+			}
+			
+			buffer[iCrcPos - 2] = bigEndian[2];
+			buffer[iCrcPos - 1] = bigEndian[3];
+		}
 
 		if(m_bReCalculateLameCrc)
 		{
@@ -212,11 +231,13 @@ XingFrame::XingFrame(const Mp3Header & header)
 	, m_StreamSize(0)
 	, m_VbrScale(0)
 	, m_bReCalculateLameCrc(false)
+	, m_bReCalculateLameMusicCrc(false)
+	, m_musicCRC(0)
 {
 	assert(header.IsValid());
 }
 
-void XingFrame::Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pOriginalFrame, const FixerSettings &rFixerSettings)
+void XingFrame::Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pOriginalFrame, const FixerSettings &rFixerSettings, FileBuffer & mp3FileBuffer)
 {
 	// Xing Flags
 	m_Flags = FRAMES_FLAG | BYTES_FLAG | TOC_FLAG;
@@ -234,7 +255,32 @@ void XingFrame::Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pO
 			SetLameData( pOriginalFrame->GetLameData() );
 			if(rFixerSettings.recalculateLameTagHeaderCrc())
 			{
-				SetRecalculateLameTagCrc(true);
+				m_bReCalculateLameCrc = true;
+				if(rFixerSettings.recalculateLameTagHeaderCrcMusic())
+				{
+					m_bReCalculateLameMusicCrc = true;
+
+					int crc = 0;
+					FileBuffer::pos_type oldPos = mp3FileBuffer.position(); // TODO this isn't ideal, some sort of iterator would be good
+					// calculate music CRC
+					for(Mp3ObjectList::const_iterator iter = finalObjectList.begin(); iter != finalObjectList.end(); ++iter)
+					{
+						if(((*iter)->GetObjectType().GetObjectId() != Mp3ObjectType::XING_FRAME) && (*iter)->GetObjectType().IsTypeOfFrame() )
+						{
+							mp3FileBuffer.setPosition((*iter)->getOldFilePosition());
+							// TODO progress? This takes some time
+							mp3FileBuffer[(*iter)->size() - 1]; // speed up the buffering
+								
+							for(unsigned long iByte = 0; iByte < (*iter)->size(); ++iByte)
+							{
+								int val = mp3FileBuffer[iByte];
+								crc = CrcHelper::CRC_update_lookup(val, crc);
+							}
+						}
+					}
+					mp3FileBuffer.setPosition(oldPos);
+					m_musicCRC = crc;
+				}
 			}
 		}
 	}

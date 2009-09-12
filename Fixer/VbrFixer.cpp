@@ -275,7 +275,7 @@ void VbrFixer::Fix( const std::string & sInFileName, const std::string & sOutFil
 				}
 			}
 			
-			xingFrame->Setup(Mp3Objects, pOriginalFrame, m_rFixerSettings);
+			xingFrame->Setup(Mp3Objects, pOriginalFrame, m_rFixerSettings, inFile);
 			if(pOriginalFrame && m_rFixerSettings.skipIfXingTagLooksGood())
 			{
 				if(xingFrame->isOriginalCorrect(pOriginalFrame))

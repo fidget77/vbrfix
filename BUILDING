@@ -11,19 +11,21 @@ BUILDING ON WINDOWS
 -------------------
 Method 1: (Visual Studio Express)
 	Install MS Visual C++ 2008 Express Edition
-	Find trolltech website and download something like qt-win-opensource-src-4.4.3.zip
-	Unzip it into a dir like c:\Qt\4.4.3
+	Find trolltech website and download something like qt-sdk-win-opensource-2009.03.1.exe
+	Install it, it should live in c:\Qt\2009.03, if not use the place it lives instead of this in the rest of this guide
 	Open the Visual Studio Express Command Prompt (from start menu\ms vis c++ express edition\vis stud tools)
-	Type 'configure -platform win32-msvc' (add -static for static linking)
+	Type 'cd c:\Qt\2009.03\qt'
+	Note: You probably want -static on the next line
+	Type 'configure -platform win32-msvc' (add ' -static' for static linking)
 	Type 'nmake sub-src'
 	Type 'nmake sub-tools'
 	Get the VbrFix source code into a directory somewhere
 	In the Visual Studio command prompt 'cd' to the directory where VbrFix is located
-	Type 'c:\Qt\4.4.3\bin\qmake.exe -tp vc -r'
+	Type 'c:\Qt\2009.03\qt\bin\qmake.exe -tp vc -r'
 	Open the newly created vbrfix.dsw file with Visual Studio Express, do any requested coversion
 	Build and run.
 	(non-static mode) - You may need to copy dlls from the qt install directory/bin into the directory where you built VbrFix in order to run it
-	Note all project changes must be done through the .pro files and then 'c:\Qt\4.4.3\bin\qmake.exe -tp vc -r' rerun
+	Note all project changes must be done through the .pro files and then 'c:\Qt\2009.03\qt\bin\qmake.exe -tp vc -r' rerun
 	
 Method 3: (mingw)
 	Find trolltech website and download something like qt-win-opensource-4.4.3-mingw.exe

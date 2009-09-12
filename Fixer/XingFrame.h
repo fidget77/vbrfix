@@ -36,7 +36,7 @@ class XingFrame : public Mp3Frame
 	public:
 		XingFrame(const Mp3Header & header);
 
-		void Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pOriginalFrame, const FixerSettings &rFixerSettings);
+		void Setup(const Mp3ObjectList & finalObjectList, const XingFrame* pOriginalFrame, const FixerSettings &rFixerSettings, FileBuffer & mp3FileBuffer);
 		bool isOriginalCorrect(const XingFrame* originalFrame);
 
 		virtual void writeToFile(FileBuffer & originalFile, std::ofstream & rOutFile) const;
@@ -53,8 +53,6 @@ class XingFrame : public Mp3Frame
 		void SetLameData(const std::vector<unsigned char> &lameData);
 		const std::vector<unsigned char>& GetLameData() const;
 
-		void SetRecalculateLameTagCrc(bool value) {m_bReCalculateLameCrc = value;}
-		
 		static bool IsCrcUpdateSupported(const Mp3Header & header);
 		
 	protected:
@@ -72,6 +70,8 @@ class XingFrame : public Mp3Frame
 		std::vector<unsigned char> m_LameData;
 
 		bool m_bReCalculateLameCrc;
+		bool m_bReCalculateLameMusicCrc;
+		int m_musicCRC;
 };
 
 #endif
