@@ -1,0 +1,4 @@
+fix-typos.diff
+fix-endianness.diff
+gcc-4.3.diff
+exit-error-code.diff

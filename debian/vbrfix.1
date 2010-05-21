@@ -1,0 +1,48 @@
+.TH VBRFIX "1" "May 2010" "VBRFIX Command Line Version" "User Commands"
+.SH NAME
+vbrfix \- fix erroneous VBR MP3 files
+.SH SYNOPSIS
+vbrfix \fB\-flag1\fR \fB\-flag2\fR \fB\-flagn\fR in.mp3 out.mp3
+.SH DESCRIPTION
+.P
+In an average song there are points that require high quality and points
+that require low quality (i.e., silence). Instead of having the whole
+file at 160kbps (CBR - Constant Bit Rate), we can use VBR - Variable Bit
+rate. This allows us to have say 96Kbps at points not requiring high
+quality and 192kbps when we need it: resulting in an overall smaller but
+higher quality MP3.
+.P
+However, the problem is that many MP3 programs estimate the time of a
+MP3 based on the first bitrate they find and the filesize. With VBR you
+can get fairly random times; as most songs start with silence you
+usually get the song length being shown as much longer than it should
+be. Also when you jump through the file in VBR: 50% through the file is
+not 50% through the song.
+.P
+A VBR null frame is placed at the beginning of the file to tell the MP3
+player information about the song length and indexing through the song.
+Some poor encoders don't produce this null frame or do so incorrectly -
+this is what vbrfix attempts to fix. Vbrfix can also fix other problems
+with MP3s as it deletes all non-MP3 content (other than tags you state
+you want to keep).
+.P
+It can also help when merging two VBR MP3s together with a merging tool
+and then needing a newly calculated VBR null frame.
+.TP
+\fB\-ri1\fR          removeId3v1 Tag
+.TP
+\fB\-ri2\fR          removeId3v2 Tag
+.TP
+\fB\-skiplame\fR     if a tag was made by LAME don't fix it
+.TP
+\fB\-always\fR       always write a new file even if not VBR
+.TP
+\fB\-makevbr\fR      make it VBR (you need \fB\-always\fR also)
+.TP
+\fB\-log\fR          write a log file
+.TP
+\fB\-lameinfo\fR     keep the lame info
+.PP
+.SH "SEE ALSO"
+.B lame
+(1)

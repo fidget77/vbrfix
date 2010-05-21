@@ -1,0 +1,97 @@
+vbrfix (0.24-7) unstable; urgency=low
+
+  * Improve the manpage slightly
+  * Fix FTBFS, updating config.{sub,guess}. Closes: #582435
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Fri, 21 May 2010 01:09:32 -0300
+
+vbrfix (0.24-6) unstable; urgency=low
+
+  * Transition to source format "3.0 (quilt)"
+  * Add descriptions to the patches being applied
+  * Update the copyright years
+  * Transition to dh(7)-based rules file
+  * Update standards-version to 3.8.4
+  * Add references to the new git repository
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Wed, 19 May 2010 10:15:13 -0300
+
+vbrfix (0.24-5) unstable; urgency=low
+
+  * debian/rules:
+    + try to fix the avr32 FTBFS once again.
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Sat, 01 Aug 2009 13:51:22 -0300
+
+vbrfix (0.24-4) unstable; urgency=low
+
+  * debian/rules:
+    + separate the cross-compilation flags.
+    + remove obsolete comments.
+    + organize the file with a view towards minimization.
+    + let's see if this helps with the avr32 port.
+  * debian/control:
+    + update standards to 3.8.2; no changes required.
+  * debian/patches:
+    + fix-typos.diff: include one other typo found by lintian.
+    + include comments for each patch.
+    + refresh the patches.
+  * debian/copyright:
+    + include versioned reference to the GPL.
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Wed, 29 Jul 2009 10:40:29 -0300
+
+vbrfix (0.24-3) unstable; urgency=low
+
+  * debian/copyright: update.
+  * debian/rules: adapted to use quilt.make.
+  * debian/patches/exit-error-code.diff: exit with error code in proper cases.
+    Closes: #455212
+  * debian/patches/*: refreshed.
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Tue, 30 Sep 2008 15:14:35 -0300
+
+vbrfix (0.24-2) unstable; urgency=low
+
+  * Acknowledge NMUs
+  * debian/patches/fix-typos.diff: remove from .diff.gz and make it a
+    proper patch. Also Closes: #486672
+  * debian/control: use Standards-Version 3.8.0. No changes needed.
+  * debian/control: cleaned up the long description.
+  * debian/control: avoided repetition of a word. (Tks lintian).
+  * debian/control: included the header to allow Debian Maintainer uploads.
+  * debian/rules: added "-Wextra" CFLAG. It is saner this way.
+  * debian/rules: added a commented inclusion of quilt.make for the future.
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Fri, 26 Sep 2008 08:08:08 -0300
+
+vbrfix (0.24-1.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Add gcc-4.3.diff patch to really fix GCC 4.3-related FTBFS
+    (Closes: #474833)
+  * Correct typo in -help invokation and allow '-always' as well as '-allways'
+    (Closes: #463140)
+  * Bump Standards-Version to 3.7.3.
+
+ -- Chris Lamb <chris@chris-lamb.co.uk>  Fri, 11 Apr 2008 23:44:54 +0100
+
+vbrfix (0.24-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix gcc-4.3 FTBFS, patch by KiBi (Closes: #461665)
+
+ -- Marc 'HE' Brockschmidt <he@debian.org>  Sun, 16 Mar 2008 21:51:35 +0100
+
+vbrfix (0.24-1) unstable; urgency=low
+
+  * Initial release (Closes: #434465)
+  * debian/vbrfix.1
+    + created manpage with the help of help2man
+    + reworked the manpage *a lot*
+  * debian/manpages: list the manpage so that it gets installed.
+  * debian/patches: patch vbrfix to work on little and big endian machines
+  * don't modify *.in files because they cause the package to FTBFS
+
+ -- Rogério Brito <rbrito@ime.usp.br>  Mon, 23 Jul 2007 21:27:46 -0300
+
