@@ -1,0 +1,30 @@
+VBRFIX
+------
+Vbrfix is a program that scans through mp3s. It then re-constructs
+the mp3 removing things it doesn't recognise and creating a new VBR Header.
+
+This should fix problems with incorrect bitrates, times and seek information in the mp3.
+However Make sure You Back Up All Files, as if this program doesn't work don't moan you lost your mp3s.
+visit www.willwap.co.uk for more information and source if you didn't get it with this file.
+see COPYING for licence information.
+see TODO for a list of problems/things to do.
+see INSTALL for how to install vbrfix.
+see AUTHORS for a list of authors.
+
+OPTIONS
+-------
+OutPut Methods(choose one of)
+  Prompt On Each File - For Each File You Fix Vbrfix asks you where to save it(you could replace the original).(default)
+  OutPut To Selected OutPut Dir - All Files Fixed are put into the output dir (selected under the file menu)(you can replace oringinal if dirs are the same).
+  OverWrite Originals - automatically copys the fixed mp3 over the original. (if vbrfix makes a error, this could be dangerous).
+  Rename All Files To fileName(vbrfixed).mp3, this means instead of replacing the file, vbrfix renames it.(eg fred.mp3 -> fred(vbrfixed).mp3)
+Other Options
+  Remove Id3v1 Tags - removes the id3 tag at end of file(has information on tilte/artist, is 128bytes)
+  Remove Id3v2 Tags - removes the id3v2 tag at start of file(has information on tilte/artist, is variable size)
+  Don't Fix Files With Lame Vbr Tags - if we find a file where the vbr tag says its from LAME, ignore the file and don't fix it.don't mix with next option.
+  Make VBR tag + copy LAME(if LAME) tag into it - make new vbr information, but put the lame tag into the file so the lame information isn't lost(default)
+  Write Even If Not VBR - write a output file even if the file is constant bitrate.
+  Write VBRTag even if not VBR -  write a output file with VBR tag information even if the file is constant bitrate.
+  Only Display Errors - tends not to tell you things like bitrate in the 2nd box, where messages come up.
+  Write Log File - writes a log file (very slow, don't use if possible as very slow in windows).
+
