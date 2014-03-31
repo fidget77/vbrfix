@@ -1,3 +1,10 @@
+vbrfix (0.33~beta+svn20090912-1) unstable; urgency=medium
+
+  * Import latest SVN commit.
+  * Update package to rewrite of vbrfix.
+
+ -- Lukas Anzinger <lukas@lukasanzinger.at>  Mon, 31 Mar 2014 22:30:06 +0200
+
 vbrfix (0.24-7) unstable; urgency=low
 
   * Improve the manpage slightly
