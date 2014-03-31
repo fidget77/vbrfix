@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/vbrfix/icon" >
+        <file>vbrfixicon.png</file>
+    </qresource>
+    <qresource prefix="/vbrfix/text" >
+      <file alias="copying.text">../COPYING</file>
+    </qresource>
+</RCC>
