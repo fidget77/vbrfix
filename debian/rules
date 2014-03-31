@@ -1,7 +1,4 @@
 #!/usr/bin/make -f
-%:
-	dh --with autotools_dev $@
 
-override_dh_auto_install:
-	dh_auto_install
-	mv debian/vbrfix/usr/bin/vbrfixc debian/vbrfix/usr/bin/vbrfix
+%:
+	dh $@
