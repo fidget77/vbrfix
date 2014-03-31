@@ -1,8 +1,8 @@
-.TH VBRFIX "1" "May 2010" "VBRFIX Command Line Version" "User Commands"
+.TH VBRFIXCONSOLE "1" "May 2010" "VBRFIX Command Line Version" "User Commands"
 .SH NAME
-vbrfix \- fix erroneous VBR MP3 files
+VbrfixConsole \- fix erroneous VBR MP3 files
 .SH SYNOPSIS
-vbrfix \fB\-flag1\fR \fB\-flag2\fR \fB\-flagn\fR in.mp3 out.mp3
+VbrfixConsole \fB\[options]\fR <infile> <outfile>
 .SH DESCRIPTION
 .P
 In an average song there are points that require high quality and points
@@ -29,20 +29,19 @@ you want to keep).
 It can also help when merging two VBR MP3s together with a merging tool
 and then needing a newly calculated VBR null frame.
 .TP
-\fB\-ri1\fR          removeId3v1 Tag
+\fB\--removeId3v1\fR                remove ID3v1 tag
 .TP
-\fB\-ri2\fR          removeId3v2 Tag
+\fB\--removeId3v2\fR                remove ID3v2 tag
 .TP
-\fB\-skiplame\fR     if a tag was made by LAME don't fix it
+\fB\--removeUnknown\fR              remove unknown tags
 .TP
-\fB\-always\fR       always write a new file even if not VBR
+\fB\--removeLame\fR                 remove LAME tag
 .TP
-\fB\-makevbr\fR      make it VBR (you need \fB\-always\fR also)
+\fB\--keepLame\fR                   keep LAME tag
 .TP
-\fB\-log\fR          write a log file
+\fB\--keepLameUpdateCrc\fR          keep LAME tag and update CRC sum
 .TP
-\fB\-lameinfo\fR     keep the lame info
+\fB\--XingFrameCrcProtectIfCan\fR   Update CRC in Xing frame if supported
 .PP
 .SH "SEE ALSO"
 .B lame
-(1)
