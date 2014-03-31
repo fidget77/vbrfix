@@ -1,0 +1,92 @@
+<ui version="4.0" >
+ <class>GetMp3HeaderInfo</class>
+ <widget class="QDialog" name="GetMp3HeaderInfo" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>553</width>
+    <height>457</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Get Mp3 Frame Header Information</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_4" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Get Mp3 Header Information</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <item>
+       <widget class="QGroupBox" name="groupBox_2" >
+        <property name="title" >
+         <string>Header</string>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2" >
+         <item>
+          <widget class="QRadioButton" name="radioHex" >
+           <property name="text" >
+            <string>Hex</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioBin" >
+           <property name="text" >
+            <string>Bin</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="inputMp3Header" >
+           <property name="inputMask" >
+            <string/>
+           </property>
+           <property name="text" >
+            <string>FFFFFFFF</string>
+           </property>
+           <property name="maxLength" >
+            <number>32</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="getHeaderInfoButton" >
+           <property name="text" >
+            <string>Get Header Info</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_3" >
+        <property name="title" >
+         <string>Results</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3" >
+         <item>
+          <widget class="QTextBrowser" name="results" />
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="res.qrc" />
+ </resources>
+ <connections/>
+</ui>

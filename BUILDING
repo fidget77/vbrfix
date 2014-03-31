@@ -1,0 +1,50 @@
+BUILDING
+--------
+Installing QT is the difficult bit:
+Information can be found in the trolltech qt documentation (http://doc.trolltech.com/). Click GettingStarted-> Installation -> choose your platform
+
+Static linking has the advantage that the QT dlls do not need to be distributed with the VbrFix application.
+
+These methods are only a simple guide and an element of luck is required.
+
+BUILDING ON WINDOWS
+-------------------
+Method 1: (Visual Studio Express)
+	Install MS Visual C++ 2008 Express Edition
+	Find trolltech website and download something like qt-sdk-win-opensource-2009.03.1.exe
+	Install it, it should live in c:\Qt\2009.03, if not use the place it lives instead of this in the rest of this guide
+	Open the Visual Studio Express Command Prompt (from start menu\ms vis c++ express edition\vis stud tools)
+	Type 'cd c:\Qt\2009.03\qt'
+	Note: You probably want -static on the next line
+	Type 'configure -platform win32-msvc' (add ' -static' for static linking)
+	Type 'nmake sub-src'
+	Type 'nmake sub-tools'
+	Get the VbrFix source code into a directory somewhere
+	In the Visual Studio command prompt 'cd' to the directory where VbrFix is located
+	Type 'c:\Qt\2009.03\qt\bin\qmake.exe -tp vc -r'
+	Open the newly created vbrfix.dsw file with Visual Studio Express, do any requested coversion
+	Build and run.
+	(non-static mode) - You may need to copy dlls from the qt install directory/bin into the directory where you built VbrFix in order to run it
+	Note all project changes must be done through the .pro files and then 'c:\Qt\2009.03\qt\bin\qmake.exe -tp vc -r' rerun
+	
+Method 3: (mingw)
+	Find trolltech website and download something like qt-win-opensource-4.4.3-mingw.exe
+	Run the installer
+	Build the qt debug libs (should be on the start menu, takes a long time ~ 2 hours)
+	Get the vbrfix source code into a directory somewhere
+	Open the qt command prompt (on the start menu under QT somewhere)
+	In the opened command prompt 'cd' to the directory where VbrFix is located
+	Type 'qmake vbrfix.pro'
+	Type 'make'
+	You may need to copy dlls from the qt install directory/bin into the directory where you built VbrFix in order to run it
+
+BUILDING ON OTHER PLATFORMS
+---------------------------
+Building on Linux should be very simple as long as you can get QT4 installed.
+	Download the source
+	'qmake vbrfix.pro'
+	'make'
+Mac:
+	Some people have managed to build it and produce executables. 
+	Currently I'm not sure how they did it. The only difficult bit should be setting up QT on the Mac.
+	Please let me know if you know how to do this so I can provide a simple guide
