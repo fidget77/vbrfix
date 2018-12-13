@@ -22,7 +22,7 @@
 #ifndef VBRFIXGETHEADERINFO_H
 #define VBRFIXGETHEADERINFO_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "ui_mp3headerInfo.h"
 
 class VbrfixGetHeaderInfo: public QDialog, public Ui_GetMp3HeaderInfo

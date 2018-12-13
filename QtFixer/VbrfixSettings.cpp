@@ -23,7 +23,7 @@
 #include "VbrfixSettings.h"
 #include "ComboManager.h"
 #include "Options.h"
-#include <QtGui>
+#include <QtWidgets>
 
 VbrfixSettings::VbrfixSettings(QWidget *parent, Options &options)
 	: QDialog(parent)

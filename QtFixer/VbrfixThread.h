@@ -22,7 +22,7 @@
 #ifndef VBRFIXTHREAD_H
 #define VBRFIXTHREAD_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "FeedBackInterface.h"
 #include "FixerSettings.h"
 #include "VbrFixer.h"

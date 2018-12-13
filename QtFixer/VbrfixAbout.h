@@ -22,7 +22,7 @@
 #ifndef VBRFIXABOUT_H
 #define VBRFIXABOUT_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "ui_about.h"
 
 class VbrfixAbout: public QDialog, public Ui_AboutDialog

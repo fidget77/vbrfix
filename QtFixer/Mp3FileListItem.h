@@ -22,7 +22,7 @@
 #ifndef MP3FILELISTITEM_H
 #define MP3FILELISTITEM_H
 
-#include <QtGui>
+#include <QtWidgets>
 #include "VbrfixMain.h"
 
 class Mp3FileListItem : public QTreeWidgetItem
