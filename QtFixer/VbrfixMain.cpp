@@ -120,7 +120,7 @@ void VbrfixMain::fixAnother()
 			m_pFixThread = NULL;
 		}
 		m_pFixThread = new VbrfixThread(m_Options, fixItem->getFileName());
-		bool bOK = connect(m_pFixThread, SIGNAL(guiEvent(int)), this, SLOT(threadGuiEvent(int)));
+		bool bOK = connect(m_pFixThread, &VbrfixThread::guiEvent, this, &VbrfixMain::threadGuiEvent);
 		assert(bOK); // something has gone wrong with the gui
 		
 		// select the fixing item 

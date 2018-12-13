@@ -23,7 +23,7 @@
 #define OPTIONS_H
 
 #include "FixerSettings.h"
-#include <QtGui>
+#include <QtWidgets>
 
 class QWidget;
 

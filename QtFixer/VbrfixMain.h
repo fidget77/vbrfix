@@ -23,7 +23,7 @@
 #define __VBRFIXMAIN_H
 
 #include "ui_vbrfixui.h"
-#include <QtGui>
+#include <QtWidgets>
 
 #include "VbrfixThread.h"
 #include "Options.h"

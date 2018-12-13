@@ -3,6 +3,7 @@
 # Subdir relative project main directory: ./QtFixer
 # Target is an application:  VbrfixGui
 
+QT += widgets
 FORMS += settings.ui \
          vbrfixui.ui \
          about.ui \
